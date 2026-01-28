@@ -1,6 +1,7 @@
 import gi
 from gi.repository import Gtk
-from network_manager import NetworkManager
+
+from core.network_manager import NetworkManager
 
 gi.require_version("Gtk", "4.0")
 
