@@ -1,0 +1,11 @@
+/* make the label bigger and bold */
+.label-wifi {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* style the switch */
+.switch-custom {
+    min-width: 60px;
+    min-height: 30px;
+}
