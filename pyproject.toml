@@ -7,5 +7,30 @@ requires-python = ">=3.12"
 dependencies = [
     "nmcli>=1.7.0",
     "nuitka>=2.8.10",
+    "pre-commit>=4.5.1",
     "pygobject>=3.54.5",
+    "ruff>=0.14.14",
 ]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+select = [
+  "E",  # pycodestyle errors
+  "F",  # pyflakes
+  "I",  # isort
+  "B",  # bugbear
+  "UP", # pyupgrade
+]
+
+ignore = [
+  "E501",  # line length (formatter handles this)
+]
+
+# Auto-fix when possible
+fix = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
