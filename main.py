@@ -1,6 +1,8 @@
-import gi
-from gi.repository import Gtk, Gdk
 import sys
+
+import gi
+from gi.repository import Gdk, Gtk
+
 from core.ui.app_header import AppHeader
 from core.ui.network_list import NetworkListWidget
 
@@ -49,7 +51,7 @@ class AppWindow(Gtk.ApplicationWindow):
 
         container.append(hbox)
 
-        self.listBox = NetworkListWidget()
+        self.listBox = NetworkListWidget(self)
         self.listBox.props.selection_mode = Gtk.SelectionMode.NONE
         container.append(self.listBox)
         self.listBox.create_network_list()
