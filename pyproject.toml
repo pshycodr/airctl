@@ -16,7 +16,7 @@ dependencies = [
 line-length = 88
 target-version = "py310"
 
-select = [
+lint.select = [
   "E",  # pycodestyle errors
   "F",  # pyflakes
   "I",  # isort
@@ -24,7 +24,7 @@ select = [
   "UP", # pyupgrade
 ]
 
-ignore = [
+lint.ignore = [
   "E501",  # line length (formatter handles this)
 ]
 
