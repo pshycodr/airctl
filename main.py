@@ -54,7 +54,6 @@ class AppWindow(Gtk.ApplicationWindow):
         self.listBox = NetworkListWidget(self)
         self.listBox.props.selection_mode = Gtk.SelectionMode.NONE
         container.append(self.listBox)
-        self.listBox.create_network_list()
 
     def _swtich_active(self, switch, param):
         print("switch actice")
