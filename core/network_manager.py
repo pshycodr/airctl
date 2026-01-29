@@ -42,22 +42,43 @@ class NetworkManager:
     def connect_network(
         ssid: str, password: str | None = None, ifname: str | None = None
     ):
-        if password:
-            nmcli.device.wifi_connect(ssid, password, ifname)
-        else:
-            nmcli.device.wifi_connect(ssid)
+        try:
+            if password:
+                nmcli.device.wifi_connect(ssid, password, ifname)
+            else:
+                cmd = ["device", "wifi", "connect", ssid]
+                nmcli._syscmd.nmcli(cmd)
+
+            network = nmcli.device()[0]
+            if network.connection == ssid and network.state == "connected":
+                return {"success": True, "message": f"Successfully connected to {ssid}"}
+
+            return {"success": False, "message": f"Failed to connect to {ssid}"}
+        except Exception as err:
+            return {
+                "success": False,
+                "message": f"Error connecting to {ssid}: {str(err)}",
+            }
 
     @staticmethod
     def disconnect_network():
-        device = nmcli.device.show()[0].device
-        nmcli.device.disconnect(device)
+        try:
+            device = nmcli.device.show()[0].device
+            nmcli.device.disconnect(device)
+            return {"success": True, "message": "Successfully disconnected"}
+        except Exception as err:
+            return {"success": False, "message": f"Error disconnecting: {str(err)}"}
 
     @staticmethod
     def force_rescan(delay: float = 2.0):
-        nmcli.device.wifi_rescan()
-        time.sleep(delay)
-        return nmcli.device.wifi()
+        try:
+            nmcli.device.wifi_rescan()
+            time.sleep(delay)
+            return {"success": True, "networks": nmcli.device.wifi()}
+        except Exception as err:
+            return {"success": False, "message": f"Error rescanning: {str(err)}"}
 
+    @staticmethod
     def _check_known_network(ssid: str) -> bool:
         try:
             nmcli.connection.show(name=ssid)
@@ -65,21 +86,33 @@ class NetworkManager:
         except Exception:
             return False
 
-    def auto_connect():
-        pass
+    # def auto_connect():
+    #     pass
 
+    @staticmethod
     def get_network_info():
         pass
 
+    @staticmethod
     def forget_network(ssid: str):
         try:
             if not NetworkManager._check_known_network(ssid):
-                return
+                return {
+                    "success": False,
+                    "message": f"Network {ssid} is not a known network",
+                }
+
             nmcli.connection.delete(name=ssid)
 
             if NetworkManager._check_known_network(ssid):
-                return f"Error forgetting the network {ssid}"
+                return {
+                    "success": False,
+                    "message": f"Error forgetting the network {ssid}",
+                }
 
-            return f"Successfully removed network {ssid}"
+            return {"success": True, "message": f"Successfully removed network {ssid}"}
         except Exception as err:
-            return f"Error while deleting the network: {err}"
+            return {
+                "success": False,
+                "message": f"Error while deleting the network: {str(err)}",
+            }
