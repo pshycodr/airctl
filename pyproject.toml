@@ -16,3 +16,10 @@ airctl = "airctl.main:main"
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["airctl"]
+
+[tool.setuptools.package-data]
+airctl = ["styles/*.css"]
+
