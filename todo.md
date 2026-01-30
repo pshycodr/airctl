@@ -1,9 +1,9 @@
 
-12. [] wifi off state widget
-13. [] add splinner for during network connection
 14. [] Better Styling of the main window
 
 ---
+13. [x] add splinner for during network connection
+12. [x] wifi off state widget
 11. [x] scan after the gui is active and wifi is on, otherwise show 'wifi is off' widget
 10. [x] wifi toggle
 9. [x] Better handling and feedback of NetworkManager Methods
