@@ -1,7 +1,7 @@
 import gi
+gi.require_version("Gtk", "4.0")
 from gi.repository import Gio, Gtk
 
-gi.require_version("Gtk", "4.0")
 
 
 class AppHeader(Gtk.HeaderBar):

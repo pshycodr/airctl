@@ -1,11 +1,11 @@
 import gi
+gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk
 
 from models import NetworkInfo
 from network_manager import NetworkManager
 from ui.dialog_box import DialogBox
 
-gi.require_version("Gtk", "4.0")
 
 
 class NetworkInfoWindow(Gtk.Window):

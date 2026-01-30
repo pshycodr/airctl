@@ -1,13 +1,13 @@
 import threading
 
 import gi
+gi.require_version("Gtk", "4.0")
 from gi.repository import GLib, Gtk
 
 from network_manager import NetworkManager
 from ui.dialog_box import DialogBox
 from ui.network_info import NetworkInfoWindow
 
-gi.require_version("Gtk", "4.0")
 
 
 class NetworkListWidget(Gtk.Box):

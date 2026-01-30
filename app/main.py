@@ -1,6 +1,7 @@
 import sys
 
 import gi
+gi.require_version("Gtk", "4.0")
 from gi.repository import Gdk, GLib, Gtk, Gio
 
 from network_manager import NetworkManager
@@ -8,7 +9,6 @@ from ui.app_header import AppHeader
 from ui.network_list import NetworkListWidget
 from ui.wifi_off_widget import WiFiOffWidget
 
-gi.require_version("Gtk", "4.0")
 
 css_provider = Gtk.CssProvider()
 css_provider.load_from_path("styles/style.css")
