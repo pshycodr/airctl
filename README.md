@@ -128,11 +128,7 @@ airctl/
 
 All dependencies are defined in `pyproject.toml` and handled via `uv`.
 
-## Releases
-
-Releases are built using Nuitka and distributed as precompiled binaries.
-
-Each tagged version (`vX.Y.Z`) automatically generates a release build.
+---
 
 ## Contributing
 
