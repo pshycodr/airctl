@@ -92,7 +92,7 @@ class AppWindow(Gtk.ApplicationWindow):
         about.set_transient_for(self)
         about.set_modal(True)
         about.set_program_name("AIRCTL")
-        about.set_version("1.0.0")
+        about.set_version("0.2.1")
         about.set_comments("A modern WiFi management tool for Linux")
         about.set_website("https://github.com/pshycodr/airctl")
         about.set_website_label("View on GitHub")
