@@ -9,10 +9,12 @@ from airctl.network_manager import NetworkManager
 from airctl.ui.app_header import AppHeader
 from airctl.ui.network_list import NetworkListWidget
 from airctl.ui.wifi_off_widget import WiFiOffWidget
+from importlib.resources import files
 
 
 css_provider = Gtk.CssProvider()
-css_provider.load_from_path("airctl/styles/style.css")
+css_data = files("airctl.styles").joinpath("style.css").read_bytes()
+css_provider.load_from_data(css_data)
 Gtk.StyleContext.add_provider_for_display(
     Gdk.Display.get_default(), css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
 )
