@@ -35,6 +35,16 @@ Run AIRCTL in development mode:
 uv run airctl/main.py
 ```
 
+To Build the application
+
+```bash
+# activate the venv
+source .venv/bin/activate
+
+# run the build script
+./scripts/build.sh
+```
+
 ## Project Structure
 
 Familiarize yourself with the codebase:

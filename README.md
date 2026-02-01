@@ -53,6 +53,12 @@ Install directly from AUR:
 yay -S airctl-bin
 ```
 
+OR
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/pshycodr/airctl/main/scripts/install.sh | bash
+```
+
 After installation, launch it from your app launcher or run:
 
 ```bash
@@ -79,7 +85,17 @@ uv sync
 Run the application:
 
 ```bash
-uv run python -m airctl.main
+uv run airctl/main.py
+```
+
+Build the application
+
+```bash
+# activate the venv
+source .venv/bin/activate
+
+# run the build script
+./scripts/build.sh
 ```
 
 ## Requirements
