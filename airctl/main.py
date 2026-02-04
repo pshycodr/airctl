@@ -9,6 +9,7 @@ from airctl.network_manager import NetworkManager
 from airctl.ui.app_header import AppHeader
 from airctl.ui.network_list import NetworkListWidget
 from airctl.ui.wifi_off_widget import WiFiOffWidget
+from airctl.ui.nm_error_widget import NetworkManagerErrorWidget
 from importlib.resources import files
 
 
@@ -31,6 +32,11 @@ class AppWindow(Gtk.ApplicationWindow):
         self.set_titlebar(header_bar)
 
         self._setup_actions()
+
+        if not NetworkManager.is_networkmanager_running():
+            error_widget = NetworkManagerErrorWidget()
+            self.set_child(error_widget)
+            return
 
         main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         main_box.set_spacing(0)
