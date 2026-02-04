@@ -4,10 +4,26 @@ from airctl.models import NetworkInfo, scaned_networks
 
 nmcli.disable_use_sudo()
 
+
 class NetworkManager:
     @staticmethod
+    def is_networkmanager_running():
+        try:
+            nmcli.radio.wifi()
+            return True
+        except nmcli._exception.NetworkManagerNotRunningException:
+            return False
+        except Exception:
+            return False
+
+    @staticmethod
     def wifi_status():
-        return nmcli.radio.wifi()
+        try:
+            return nmcli.radio.wifi()
+        except nmcli._exception.NetworkManagerNotRunningException:
+            return False
+        except Exception:
+            return False
 
     @staticmethod
     def toggle_wifi():
@@ -17,8 +33,10 @@ class NetworkManager:
 
             return nmcli.radio.wifi_on()
 
+        except nmcli._exception.NetworkManagerNotRunningException:
+            return False
         except Exception:
-            pass
+            return False
 
     @staticmethod
     def scan_networks() -> list[scaned_networks]:
