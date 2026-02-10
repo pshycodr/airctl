@@ -54,6 +54,7 @@ class NetworkManager:
                     "ssid": net.ssid,
                     "signal": int(net.signal),
                     "security": net.security,
+                    "freq" : NetworkManager._get_frequency(freq=net.freq)
                 }
             )
 
@@ -107,9 +108,6 @@ class NetworkManager:
         except Exception:
             return False
 
-    # def auto_connect():
-    #     pass
-
     @staticmethod
     def get_network_info(ssid: str):
         try:
@@ -141,3 +139,23 @@ class NetworkManager:
                 "success": False,
                 "message": f"Error while deleting the network: {str(err)}",
             }
+            
+    @staticmethod
+    def _get_frequency(freq) -> str:
+
+        if freq is None:
+            return ""
+
+        try:
+            freq = int(float(freq))
+        except (ValueError, TypeError):
+            return ""
+
+        if 2400 <= freq <= 2500:
+            return "2.4GHz"
+        elif 4900 <= freq <= 5900:
+            return "5GHz"
+        elif 5925 <= freq <= 7125:
+            return "6GHz"
+
+        return ""

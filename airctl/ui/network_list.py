@@ -180,15 +180,26 @@ class NetworkListWidget(Gtk.Box):
         text_box.set_spacing(4)
         text_box.set_hexpand(True)
 
+        ssid_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        ssid_box.set_spacing(8)
+        ssid_box.set_hexpand(True)
+
         ssid_label = Gtk.Label(label=network["ssid"])
         ssid_label.set_halign(Gtk.Align.START)
         ssid_label.add_css_class("connected-ssid")
+
+        net_freq = Gtk.Label(label=network["freq"])
+        net_freq.set_halign(Gtk.Align.START)
+        net_freq.add_css_class("connected-ssid-freq")
+
+        ssid_box.append(ssid_label)
+        ssid_box.append(net_freq)
 
         status_label = Gtk.Label(label="Connected")
         status_label.set_halign(Gtk.Align.START)
         status_label.set_opacity(0.7)
 
-        text_box.append(ssid_label)
+        text_box.append(ssid_box)
         text_box.append(status_label)
 
         card.append(text_box)
@@ -237,12 +248,22 @@ class NetworkListWidget(Gtk.Box):
 
         item.append(signal_icon)
 
+        ssid_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        ssid_box.set_spacing(8)
+        ssid_box.set_hexpand(True)
+
         ssid_label = Gtk.Label(label=network["ssid"])
         ssid_label.set_halign(Gtk.Align.START)
-        ssid_label.set_hexpand(True)
-        ssid_label.set_ellipsize(3)
+        ssid_label.add_css_class("connected-ssid")
 
-        item.append(ssid_label)
+        net_freq = Gtk.Label(label=network["freq"])
+        net_freq.set_halign(Gtk.Align.START)
+        net_freq.add_css_class("connected-ssid-freq")
+
+        ssid_box.append(ssid_label)
+        ssid_box.append(net_freq)
+
+        item.append(ssid_box)
 
         signal_label = Gtk.Label(label=f"{signal_strength}%")
         signal_label.set_width_chars(4)

@@ -27,6 +27,12 @@
     font-weight: 600;
 }
 
+.connected-ssid-freq{
+    font-size: 12px;
+    font-weight:300;
+    color: rgba(255, 255, 255, 0.703);
+}
+
 .network-item {
     background: rgba(45, 45, 58, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.05);
