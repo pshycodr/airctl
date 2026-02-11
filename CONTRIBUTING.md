@@ -11,6 +11,29 @@ git clone https://github.com/pshycodr/airctl.git
 cd airctl
 ```
 
+## Project Structure
+
+```
+airctl/
+├── airctl/
+│   ├── main.py               # Entry point
+│   ├── main_cli.py           # CLI argument parser
+│   ├── models.py             # Data models
+│   ├── network_manager.py    # NetworkManager interface
+│   ├── styles/
+│   │   └── style.css         # Application styling
+│   └── ui/
+│       ├── app_header.py
+│       ├── dialog_box.py
+│       ├── network_info.py
+│       ├── network_list.py
+│       └── wifi_off_widget.py
+│
+├── assets/                   # Icons, banners, demo images
+├── pyproject.toml            # Project metadata and dependencies
+└── LICENSE
+```
+
 ## Development Setup
 
 AIRCTL uses uv for dependency management. Install uv if you have not already:

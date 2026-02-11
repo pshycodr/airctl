@@ -41,6 +41,7 @@
 * Disconnect and forget networks
 * Auto-refresh network list
 * Modern GTK4 interface
+* Powerful command-line interface
 * Distributed via AUR (`airctl-bin`)
 
 ## Installation
@@ -107,6 +108,8 @@ source .venv/bin/activate
 
 ## Usage
 
+### GUI Mode
+
 Launch AIRCTL and toggle WiFi on or off using the switch at the top.
 
 * The connected network appears as a highlighted card.
@@ -115,32 +118,23 @@ Launch AIRCTL and toggle WiFi on or off using the switch at the top.
 * For secured networks, enter the password when prompted.
 * Use the settings icon on a connected network to view details or disconnect.
 
-## Project Structure
+### CLI Mode
 
+AIRCTL includes a powerful command-line interface for managing WiFi networks.
+
+```bash
+airctl <command> [options]
+
+# run to get all the commands
+airctl -h
 ```
-airctl/
-├── airctl/
-│   ├── main.py               # Entry point
-│   ├── models.py             # Data models
-│   ├── network_manager.py    # NetworkManager interface
-│   ├── styles/
-│   │   └── style.css         # Application styling
-│   └── ui/
-│       ├── app_header.py
-│       ├── dialog_box.py
-│       ├── network_info.py
-│       ├── network_list.py
-│       └── wifi_off_widget.py
-│
-├── assets/                   # Icons, banners, demo images
-├── pyproject.toml            # Project metadata and dependencies
-└── LICENSE
-```
+
 
 ## Dependencies
 
 * PyGObject (gi)
 * nmcli
+* rich (for CLI output)
 
 All dependencies are defined in `pyproject.toml` and handled via `uv`.
 
