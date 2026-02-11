@@ -30,8 +30,10 @@ echo "Starting Nuitka build..."
 nuitka \
   --onefile \
   --include-package=gi \
+  --include-package=gi.repository \
   --include-module=nmcli \
   --include-data-files=airctl/styles/style.css=airctl/styles/style.css \
+  --assume-yes-for-downloads \
   --output-dir=out \
   --output-filename=airctl.bin \
   airctl/main.py
