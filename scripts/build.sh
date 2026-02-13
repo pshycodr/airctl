@@ -29,8 +29,11 @@ echo "Starting Nuitka build..."
 
 nuitka \
   --onefile \
+  --enable-plugin=implicit-imports \
   --include-package=gi \
   --include-package=gi.repository \
+  --include-package=rich \
+  --include-package-data=rich \
   --include-module=nmcli \
   --include-data-files=airctl/styles/style.css=airctl/styles/style.css \
   --assume-yes-for-downloads \
