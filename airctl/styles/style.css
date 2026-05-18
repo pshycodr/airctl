@@ -1,8 +1,3 @@
-window {
-    background: rgba(20, 20, 20, 0.88);
-    border-radius: 18px;
-}
-
 .wifi-toggle-label {
     font-size: 20px;
     font-weight: 600;
@@ -14,7 +9,7 @@ window {
 }
 
 .connected-card {
-    background: rgba(45, 45, 58, 0.6);
+    /* background: rgba(45, 45, 58, 0.6); */
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     padding: 20px;
@@ -23,12 +18,12 @@ window {
 }
 
 .connected-card:hover {
-    background: rgba(50, 50, 65, 0.7);
+    background: rgba(255, 255, 255, 0.039);
     border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .connected-ssid {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
 }
 
@@ -39,78 +34,17 @@ window {
 }
 
 .network-item {
-    background: rgba(45, 45, 58, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    /* background: rgba(45, 45, 58, 0.4); */
+    border: 1.5px solid rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     padding: 16px;
     transition: all 0.3s ease;
 }
 
 .network-item:hover {
-    background: rgba(50, 50, 65, 0.5);
+    background: rgba(255, 255, 255, 0.039);
     border: 1px solid rgba(255, 255, 255, 0.1);
     transform: translateY(-1px);
-}
-
-.unknown-network {
-    background: linear-gradient(135deg, rgba(45, 45, 58, 0.4) 0%, rgba(60, 60, 75, 0.3) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 12px 16px;
-    margin: 4px 8px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.unknown-network:hover {
-    background: linear-gradient(135deg, rgba(50, 50, 65, 0.5) 0%, rgba(65, 65, 80, 0.4) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.connected-network {
-    background: linear-gradient(135deg, rgba(34, 139, 230, 0.15) 0%, rgba(88, 166, 255, 0.1) 100%);
-    border: 1px solid rgba(34, 139, 230, 0.3);
-    border-radius: 12px;
-    padding: 12px 16px;
-    margin: 4px 8px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 20px rgba(34, 139, 230, 0.2);
-}
-
-.connected-network:hover {
-    background: linear-gradient(135deg, rgba(34, 139, 230, 0.2) 0%, rgba(88, 166, 255, 0.15) 100%);
-    border: 1px solid rgba(34, 139, 230, 0.4);
-    box-shadow: 0 0 25px rgba(34, 139, 230, 0.3);
-}
-
-.known-network {
-    background: linear-gradient(135deg, rgba(46, 204, 113, 0.12) 0%, rgba(52, 211, 153, 0.08) 100%);
-    border: 1px solid rgba(46, 204, 113, 0.25);
-    border-radius: 12px;
-    padding: 12px 16px;
-    margin: 4px 8px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.known-network:hover {
-    background: linear-gradient(135deg, rgba(46, 204, 113, 0.18) 0%, rgba(52, 211, 153, 0.12) 100%);
-    border: 1px solid rgba(46, 204, 113, 0.35);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.15);
-}
-
-.network-header {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 16px;
-    border-radius: 12px 12px 0 0;
-}
-
-.network-header label {
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
 }
 
 .signal-excellent {
