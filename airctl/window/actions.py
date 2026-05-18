@@ -57,7 +57,7 @@ def show_about_dialog(window, action, param):
         "AIRCTL"
     )
 
-    about.set_version("v0.3.0")
+    about.set_version("v0.4.0")
 
     about.set_comments(
         "A modern WiFi management tool for Linux"
