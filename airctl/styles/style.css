@@ -1,3 +1,8 @@
+window {
+    background: rgba(20, 20, 20, 0.88);
+    border-radius: 18px;
+}
+
 .wifi-toggle-label {
     font-size: 20px;
     font-weight: 600;
