@@ -80,6 +80,7 @@ class AirctlCli:
         table.add_row("toggle", "Toggle WiFi on/off")
         table.add_row("forget", "Remove saved network")
         table.add_row("info", "Show network details")
+        table.add_row("speedtest", "Run a network speed test")
 
         self.console.print("\n[bold cyan]AIRCTL[/] - a modern WiFi management tool for Linux\n")
         self.console.print(table)
