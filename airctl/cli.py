@@ -344,7 +344,13 @@ class AirctlCli:
                 status.update(f"[bold cyano]{msg}[/]")
 
             SpeedtestManager.run_speedtest(on_progress, on_result, on_error)
-            event.wait()
+            try:
+                # Loop wait so KeyboardInterrupt can be caught immediately
+                while not event.is_set():
+                    event.wait(0.1)
+            except KeyboardInterrupt:
+                self._error("\nSpeed test cancelled by user.")
+                return 1
         
         if 'error' in result_data:
             self._error(f"Speedtest failed: {result_data['error']}")

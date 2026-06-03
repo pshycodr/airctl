@@ -7,7 +7,7 @@ class SpeedtestManager:
         def _test():
             try:
                 if progress_callback:progress_callback("Finding best server...")
-                st = speedtest.Speedtest()
+                st = speedtest.Speedtest(secure=True, timeout=5)
                 st.get_best_server()
 
                 if progress_callback: progress_callback("Testing download speed...")

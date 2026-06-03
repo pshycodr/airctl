@@ -35,6 +35,12 @@ class SpeedtestDialog(Gtk.Window):
         box.append(self.start_button)
 
         self.set_child(box)
+        self._is_closed = False
+        self.connect("close-request", self.on_close)
+
+    def on_close(self, window):
+        self._is_closed = True
+        return False
 
     def on_start(self, button):
         self.start_button.set_sensitive(False)
@@ -47,10 +53,12 @@ class SpeedtestDialog(Gtk.Window):
         )
 
     def update_status(self, msg):
+        if getattr(self, '_is_closed', False): return False
         self.status_label.set_label(msg)
         return False
 
     def show_results(self, ping, download, upload):
+        if getattr(self, '_is_closed', False): return False
         self.spinner.stop()
         self.status_label.set_label("Test Complete")
         res = f"Ping: <b>{ping:.2f} ms</b>\nDownload: <b>{download:.2f} Mbps</b>\nUpload: <b>{upload:.2f} Mbps</b>"
@@ -60,6 +68,7 @@ class SpeedtestDialog(Gtk.Window):
         return False
 
     def show_error(self, err):
+        if getattr(self, '_is_closed', False): return False
         self.spinner.stop()
         self.status_label.set_label("Error occured")
         self.result_label.set_label(str(err))
