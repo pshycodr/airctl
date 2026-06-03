@@ -1,13 +1,13 @@
 import threading
 
 import gi
+
 gi.require_version("Gtk", "4.0")
 from gi.repository import GLib, Gtk
 
 from airctl.network_manager import NetworkManager
 from airctl.ui.dialog_box import DialogBox
 from airctl.ui.network_info import NetworkInfoWindow
-
 
 
 class NetworkListWidget(Gtk.Box):
@@ -211,18 +211,22 @@ class NetworkListWidget(Gtk.Box):
 
         card.append(signal_percentage_label)
 
-        network_info_btn = Gtk.Button()
-        network_info_btn.set_icon_name("go-next-symbolic")
-        network_info_btn.add_css_class("flat")
-        network_info_btn.add_css_class("circular")
-        network_info_btn.set_valign(Gtk.Align.CENTER)
-        network_info_btn.set_tooltip_text("Network Actions and Info")
-        network_info_btn.connect("clicked", lambda _: self._open_network_info(network["ssid"]))
+        network_info_button = Gtk.Button()
+        network_info_button.set_icon_name("go-next-symbolic")
+        network_info_button.add_css_class("flat")
+        network_info_button.add_css_class("circular")
+        network_info_button.set_valign(Gtk.Align.CENTER)
+        network_info_button.set_tooltip_text("Network Actions and Info")
+        network_info_button.connect(
+            "clicked", lambda _: self._open_network_info(network["ssid"])
+        )
 
-        card.append(network_info_btn)
+        card.append(network_info_button)
 
         click = Gtk.GestureClick()
-        click.connect("released", lambda *args: self._open_network_info(network["ssid"]))
+        click.connect(
+            "released", lambda *args: self._open_network_info(network["ssid"])
+        )
         card.add_controller(click)
 
         return card
@@ -297,7 +301,9 @@ class NetworkListWidget(Gtk.Box):
 
         if network["active"]:
             self._open_network_info(network["ssid"])
-        elif network["security"] and NetworkManager._check_known_network(network["ssid"]):
+        elif network["security"] and NetworkManager._check_known_network(
+            network["ssid"]
+        ):
             self._show_connection_confirm(network["ssid"])
         elif network["security"]:
             self._show_password_dialog(network["ssid"])

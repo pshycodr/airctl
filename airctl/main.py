@@ -10,6 +10,7 @@ CLI_COMMANDS = {
     "toggle",
     "forget",
     "info",
+    "speedtest",
 }
 
 
