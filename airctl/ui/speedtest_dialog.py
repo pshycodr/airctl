@@ -20,6 +20,17 @@ class SpeedtestDialog(Gtk.Window):
         box.set_margin_start(20)
         box.set_margin_end(20)
 
+        nav_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        nav_box.set_margin_bottom(12)
+        
+        back_button = Gtk.Button()
+        back_button.set_icon_name("go-previous-symbolic")
+        back_button.set_halign(Gtk.Align.START)
+        back_button.connect("clicked", lambda _: self.destroy())
+        
+        nav_box.append(back_button)
+        box.append(nav_box)
+
         self.status_label = Gtk.Label(label="Ready to test")
         self.spinner = Gtk.Spinner()
 
