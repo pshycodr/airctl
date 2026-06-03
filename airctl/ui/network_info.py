@@ -7,7 +7,7 @@ from airctl.models import NetworkInfo
 from airctl.network_manager import NetworkManager
 from airctl.ui.dialog_box import DialogBox
 
-from airctl.ui.speedtest_dialog import SpeedtestDialog
+
 
 
 class NetworkInfoWindow(Gtk.Window):
@@ -138,19 +138,7 @@ class NetworkInfoWindow(Gtk.Window):
         disconnect_box.append(disconnect_button)
         disconnect_box.append(disconnect_label)
 
-        speedtest_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        speedtest_box.set_spacing(4)
-        speedtest_box.set_halign(Gtk.Align.CENTER)
 
-        speedtest_button = Gtk.Button()
-        speedtest_button.set_icon_name("utilities-system-monitor-symbolic")
-        speedtest_button.add_css_class("circular")
-        speedtest_button.set_size_request(80, 80)
-        speedtest_button.connect("clicked", lambda _: SpeedtestDialog(self).present())
-
-        speedtest_label = Gtk.Label(label="Speed Test")
-        speedtest_box.append(speedtest_button)
-        speedtest_box.append(speedtest_label)
 
         # share_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         # share_box.set_spacing(4)
@@ -170,7 +158,6 @@ class NetworkInfoWindow(Gtk.Window):
         button_box.append(forget_box)
         button_box.append(disconnect_box)
         # button_box.append(share_box)
-        button_box.append(speedtest_box)
 
         return button_box
 

@@ -8,6 +8,7 @@ from gi.repository import GLib, Gtk
 from airctl.network_manager import NetworkManager
 from airctl.ui.dialog_box import DialogBox
 from airctl.ui.network_info import NetworkInfoWindow
+from airctl.ui.speedtest_dialog import SpeedtestDialog
 
 
 class NetworkListWidget(Gtk.Box):
@@ -222,6 +223,23 @@ class NetworkListWidget(Gtk.Box):
         )
 
         card.append(network_info_button)
+
+        separator = Gtk.Separator(orientation=Gtk.Orientation.VERTICAL)
+        separator.set_margin_top(8)
+        separator.set_margin_bottom(8)
+        separator.add_css_class("speedtest-separator")
+        card.append(separator)
+
+        speedtest_button = Gtk.Button()
+        speedtest_button.set_icon_name("utilities-system-monitor-symbolic")
+        speedtest_button.add_css_class("speedtest-inline-btn")
+        speedtest_button.set_valign(Gtk.Align.CENTER)
+        speedtest_button.set_tooltip_text("Run Speed Test")
+        speedtest_button.connect(
+            "clicked", lambda _: SpeedtestDialog(self.parent).present()
+        )
+
+        card.append(speedtest_button)
 
         click = Gtk.GestureClick()
         click.connect(
