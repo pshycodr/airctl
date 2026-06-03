@@ -25,7 +25,7 @@ class SpeedtestDialog(Gtk.Window):
         back_button = Gtk.Button()
         back_button.set_icon_name("go-previous-symbolic")
         back_button.set_halign(Gtk.Align.START)
-        back_button.connect("clicked", lambda _: self.destroy())
+        back_button.connect("clicked", lambda _: self.close())
         
         nav_box.append(back_button)
         box.append(nav_box)
