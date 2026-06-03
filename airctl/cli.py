@@ -1,4 +1,3 @@
-import speedtest
 import argparse
 from rich.console import Console
 from rich.table import Table
@@ -327,6 +326,10 @@ class AirctlCli:
         from rich.status import Status
         import threading
 
+        if not NetworkManager.wifi_status():
+            self._error("WiFi is turned off. Enable WiFi first.")
+            return 1
+
         event = threading.Event()
         result_data = {}
 
@@ -342,7 +345,7 @@ class AirctlCli:
 
         with Status("[bold cyan]Starting speed test...[/]", console=self.console) as status:
             def on_progress(msg):
-                status.update(f"[bold cyano]{msg}[/]")
+                status.update(f"[bold cyan]{msg}[/]")
 
             SpeedtestManager.run_speedtest(on_progress, on_result, on_error)
             try:

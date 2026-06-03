@@ -236,16 +236,10 @@ class NetworkListWidget(Gtk.Box):
         speedtest_button.set_valign(Gtk.Align.CENTER)
         speedtest_button.set_tooltip_text("Run Speed Test")
         speedtest_button.connect(
-            "clicked", lambda _: SpeedtestDialog(self.parent).present()
+            "clicked", lambda _: self._open_speedtest()
         )
 
         card.append(speedtest_button)
-
-        click = Gtk.GestureClick()
-        click.connect(
-            "released", lambda *args: self._open_network_info(network["ssid"])
-        )
-        card.add_controller(click)
 
         return card
 
@@ -327,6 +321,13 @@ class NetworkListWidget(Gtk.Box):
             self._show_password_dialog(network["ssid"])
         else:
             self._connect_to_network(network["ssid"])
+
+    def _open_speedtest(self):
+        if hasattr(self, '_speedtest_dialog') and self._speedtest_dialog and not self._speedtest_dialog._is_closed:
+            self._speedtest_dialog.present()
+            return
+        self._speedtest_dialog = SpeedtestDialog(self.parent)
+        self._speedtest_dialog.present()
 
     def _open_network_info(self, ssid):
         info_window = NetworkInfoWindow(self.parent, ssid)

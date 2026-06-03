@@ -1,4 +1,3 @@
-from pickle import TRUE
 import gi
 
 gi.require_version("Gtk", "4.0")
@@ -81,7 +80,7 @@ class SpeedtestDialog(Gtk.Window):
     def show_error(self, err):
         if getattr(self, '_is_closed', False): return False
         self.spinner.stop()
-        self.status_label.set_label("Error occured")
+        self.status_label.set_label("Error occurred")
         self.result_label.set_label(str(err))
         self.start_button.set_sensitive(True)
         self.start_button.set_label("Retry Test")
