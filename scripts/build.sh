@@ -36,6 +36,7 @@ nuitka \
   --include-package-data=rich \
   --include-module=nmcli \
   --include-data-files=airctl/styles/style.css=airctl/styles/style.css \
+  --include-data-files=airctl/assets/speedtest.png=airctl/assets/speedtest.png \
   --assume-yes-for-downloads \
   --output-dir=out \
   --output-filename=airctl.bin \
