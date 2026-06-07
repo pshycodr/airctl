@@ -7,7 +7,7 @@ class SpeedtestManager:
         def _test():
             try:
                 if progress_callback:progress_callback("Finding best server...")
-                st = speedtest.Speedtest(secure=True, timeout=5)
+                st = speedtest.Speedtest(secure=True, timeout=10)
                 st.get_best_server()
 
                 if progress_callback: progress_callback("Testing download speed...")
@@ -19,6 +19,10 @@ class SpeedtestManager:
                 ping = st.results.ping
                 if result_callback: result_callback(ping, download_speed, upload_speed)
 
+            except speedtest.ConfigRetrievalError:
+                if error_callback: error_callback("Could not reach speedtest servers. Check your internet connection.")
+            except speedtest.NoMatchedServers:
+                if error_callback: error_callback("No suitable speedtest server found. Try again later.")
             except Exception as e:
                 if error_callback: error_callback(str(e))
             

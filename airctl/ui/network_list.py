@@ -232,11 +232,13 @@ class NetworkListWidget(Gtk.Box):
         card.append(separator)
 
         speedtest_button = Gtk.Button()
-        speedtest_icon = files("airctl.assets").joinpath("speedtest.png")
+        speedtest_icon = files("airctl.assets").joinpath("speedtest.svg")
         with as_file(speedtest_icon) as icon_path:
             speedtest_image = Gtk.Image.new_from_file(str(icon_path))
         speedtest_image.set_pixel_size(30)
         speedtest_button.set_child(speedtest_image)
+        speedtest_button.add_css_class("flat")
+        speedtest_button.add_css_class("circular")
         speedtest_button.add_css_class("speedtest-inline-btn")
         speedtest_button.set_valign(Gtk.Align.CENTER)
         speedtest_button.set_tooltip_text("Run Speed Test")

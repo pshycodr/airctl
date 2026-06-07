@@ -22,12 +22,12 @@ class SpeedtestDialog(Gtk.Window):
         nav_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         nav_box.set_margin_bottom(12)
         
-        back_button = Gtk.Button()
-        back_button.set_icon_name("go-previous-symbolic")
-        back_button.set_halign(Gtk.Align.START)
-        back_button.connect("clicked", lambda _: self.close())
+        self.back_button = Gtk.Button()
+        self.back_button.set_icon_name("go-previous-symbolic")
+        self.back_button.set_halign(Gtk.Align.START)
+        self.back_button.connect("clicked", lambda _: self.close())
         
-        nav_box.append(back_button)
+        nav_box.append(self.back_button)
         box.append(nav_box)
 
         self.status_label = Gtk.Label(label="Ready to test")
@@ -47,6 +47,9 @@ class SpeedtestDialog(Gtk.Window):
         self.set_child(box)
         self._is_closed = False
         self.connect("close-request", self.on_close)
+        self.start_button.set_can_focus(True)
+        self.set_default_widget(self.start_button)
+        self.connect("map", lambda _: self.start_button.grab_focus())
 
     def on_close(self, window):
         self._is_closed = True
@@ -54,6 +57,7 @@ class SpeedtestDialog(Gtk.Window):
 
     def on_start(self, button):
         self.start_button.set_sensitive(False)
+        self.back_button.set_sensitive(False)
         self.spinner.start()
         self.result_label.set_label("")
         SpeedtestManager.run_speedtest(
@@ -75,6 +79,8 @@ class SpeedtestDialog(Gtk.Window):
         self.result_label.set_markup(res)
         self.start_button.set_sensitive(True)
         self.start_button.set_label("Test Again")
+        self.back_button.set_sensitive(True)
+        self.back_button.grab_focus()
         return False
 
     def show_error(self, err):
@@ -84,4 +90,6 @@ class SpeedtestDialog(Gtk.Window):
         self.result_label.set_label(str(err))
         self.start_button.set_sensitive(True)
         self.start_button.set_label("Retry Test")
+        self.back_button.set_sensitive(True)
+        self.back_button.grab_focus()
         return False

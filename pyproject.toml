@@ -23,5 +23,5 @@ build-backend = "setuptools.build_meta"
 packages = ["airctl"]
 
 [tool.setuptools.package-data]
-airctl = ["styles/*.css", "assets/*.png"]
+airctl = ["styles/*.css", "assets/*.svg"]
 

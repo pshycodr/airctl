@@ -95,20 +95,17 @@
 }
 
 .speedtest-inline-btn {
-    background-color: #3ae8c1;
-    color: #1e1e28;
-    border-radius: 50%;
-    min-width: 48px;
-    min-height: 48px;
+    background: transparent;
+    border: none;
     padding: 0;
     margin-left: 8px;
-    border: none;
+    opacity: 0.7;
     transition: all 0.2s ease;
 }
 
 .speedtest-inline-btn:hover {
-    transform: scale(1.05);
-    background-color: #4df9d2;
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 .speedtest-separator {
