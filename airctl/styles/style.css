@@ -93,3 +93,25 @@
     opacity: 1;
     transform: scale(1.1);
 }
+
+.speedtest-inline-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-left: 8px;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+}
+
+.speedtest-inline-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.speedtest-separator {
+    background-color: rgba(255, 255, 255, 0.15);
+    min-width: 2px;
+    border-radius: 2px;
+    margin-left: 8px;
+    margin-right: 4px;
+}

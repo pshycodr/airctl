@@ -50,5 +50,10 @@ HelpMessages = {
                 "usage": "airctl info [--ssid SSID]",
                 "options": ["--ssid    Network SSID/Name (current if not specified)"],
                 "examples": ["airctl info", "airctl info --ssid MyNetwork"]
+            },
+            "speedtest": {
+                "desc": "Run a network speed test (ping, download, upload)",
+                "usage": "airctl speedtest",
+                "examples": ["airctl speedtest"]
             }
         }

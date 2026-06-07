@@ -1,13 +1,15 @@
+from importlib.resources import files, as_file
 import threading
 
 import gi
+
 gi.require_version("Gtk", "4.0")
 from gi.repository import GLib, Gtk
 
 from airctl.network_manager import NetworkManager
 from airctl.ui.dialog_box import DialogBox
 from airctl.ui.network_info import NetworkInfoWindow
-
+from airctl.ui.speedtest_dialog import SpeedtestDialog
 
 
 class NetworkListWidget(Gtk.Box):
@@ -211,19 +213,40 @@ class NetworkListWidget(Gtk.Box):
 
         card.append(signal_percentage_label)
 
-        network_info_btn = Gtk.Button()
-        network_info_btn.set_icon_name("go-next-symbolic")
-        network_info_btn.add_css_class("flat")
-        network_info_btn.add_css_class("circular")
-        network_info_btn.set_valign(Gtk.Align.CENTER)
-        network_info_btn.set_tooltip_text("Network Actions and Info")
-        network_info_btn.connect("clicked", lambda _: self._open_network_info(network["ssid"]))
+        network_info_button = Gtk.Button()
+        network_info_button.set_icon_name("go-next-symbolic")
+        network_info_button.add_css_class("flat")
+        network_info_button.add_css_class("circular")
+        network_info_button.set_valign(Gtk.Align.CENTER)
+        network_info_button.set_tooltip_text("Network Actions and Info")
+        network_info_button.connect(
+            "clicked", lambda _: self._open_network_info(network["ssid"])
+        )
 
-        card.append(network_info_btn)
+        card.append(network_info_button)
 
-        click = Gtk.GestureClick()
-        click.connect("released", lambda *args: self._open_network_info(network["ssid"]))
-        card.add_controller(click)
+        separator = Gtk.Separator(orientation=Gtk.Orientation.VERTICAL)
+        separator.set_margin_top(8)
+        separator.set_margin_bottom(8)
+        separator.add_css_class("speedtest-separator")
+        card.append(separator)
+
+        speedtest_button = Gtk.Button()
+        speedtest_icon = files("airctl.assets").joinpath("speedtest.svg")
+        with as_file(speedtest_icon) as icon_path:
+            speedtest_image = Gtk.Image.new_from_file(str(icon_path))
+        speedtest_image.set_pixel_size(30)
+        speedtest_button.set_child(speedtest_image)
+        speedtest_button.add_css_class("flat")
+        speedtest_button.add_css_class("circular")
+        speedtest_button.add_css_class("speedtest-inline-btn")
+        speedtest_button.set_valign(Gtk.Align.CENTER)
+        speedtest_button.set_tooltip_text("Run Speed Test")
+        speedtest_button.connect(
+            "clicked", lambda _: self._open_speedtest()
+        )
+
+        card.append(speedtest_button)
 
         return card
 
@@ -297,12 +320,21 @@ class NetworkListWidget(Gtk.Box):
 
         if network["active"]:
             self._open_network_info(network["ssid"])
-        elif network["security"] and NetworkManager._check_known_network(network["ssid"]):
+        elif network["security"] and NetworkManager._check_known_network(
+            network["ssid"]
+        ):
             self._show_connection_confirm(network["ssid"])
         elif network["security"]:
             self._show_password_dialog(network["ssid"])
         else:
             self._connect_to_network(network["ssid"])
+
+    def _open_speedtest(self):
+        if hasattr(self, '_speedtest_dialog') and self._speedtest_dialog and not self._speedtest_dialog._is_closed:
+            self._speedtest_dialog.present()
+            return
+        self._speedtest_dialog = SpeedtestDialog(self.parent)
+        self._speedtest_dialog.present()
 
     def _open_network_info(self, ssid):
         info_window = NetworkInfoWindow(self.parent, ssid)

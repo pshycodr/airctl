@@ -60,6 +60,10 @@ class AirctlCli:
         info_parser.add_argument("-h", "--help", action="store_true")
         info_parser.set_defaults(func=self._network_info)
 
+        speedtest_parser = subparsers.add_parser("speedtest", add_help=False)
+        speedtest_parser.add_argument("-h", "--help", action="store_true")
+        speedtest_parser.set_defaults(func=self._speedtest_network)
+
         return parser
 
     def _show_help(self):
@@ -75,6 +79,7 @@ class AirctlCli:
         table.add_row("toggle", "Toggle WiFi on/off")
         table.add_row("forget", "Remove saved network")
         table.add_row("info", "Show network details")
+        table.add_row("speedtest", "Run a network speed test")
 
         self.console.print("\n[bold cyan]AIRCTL[/] - a modern WiFi management tool for Linux\n")
         self.console.print(table)
@@ -311,3 +316,52 @@ class AirctlCli:
             table.add_row(ssid, signal_text, security, band, status)
 
         self.console.print(table)
+    
+    def _speedtest_network(self, args):
+        if hasattr(args, 'help') and args.help:
+            self._show_command_help("speedtest")
+            return 0
+
+        from airctl.speedtest_manager import SpeedtestManager
+        from rich.status import Status
+        import threading
+
+        if not NetworkManager.wifi_status():
+            self._error("WiFi is turned off. Enable WiFi first.")
+            return 1
+
+        event = threading.Event()
+        result_data = {}
+
+        def on_result(ping, download, upload):
+            result_data['ping'] = ping
+            result_data['download'] = download
+            result_data['upload'] = upload
+            event.set()
+
+        def on_error(err):
+            result_data['error'] = err
+            event.set()
+
+        with Status("[bold cyan]Starting speed test...[/]", console=self.console) as status:
+            def on_progress(msg):
+                status.update(f"[bold cyan]{msg}[/]")
+
+            SpeedtestManager.run_speedtest(on_progress, on_result, on_error)
+            try:
+                # Loop wait so KeyboardInterrupt can be caught immediately
+                while not event.is_set():
+                    event.wait(0.1)
+            except KeyboardInterrupt:
+                self._error("\nSpeed test cancelled by user.")
+                return 1
+        
+        if 'error' in result_data:
+            self._error(f"Speedtest failed: {result_data['error']}")
+            return 1
+
+        self.console.print(f"Ping: [bold yellow] {result_data['ping']:.2f} ms[/]")
+        self.console.print(f"Download: [bold green] {result_data['download']:.2f} Mbps[/]")
+        self.console.print(f"Upload: [bold blue] {result_data['upload']:.2f} Mbps[/]")
+
+        return 0

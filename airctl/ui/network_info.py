@@ -1,10 +1,12 @@
 import gi
+
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk
 
 from airctl.models import NetworkInfo
 from airctl.network_manager import NetworkManager
 from airctl.ui.dialog_box import DialogBox
+
 
 
 
@@ -135,6 +137,8 @@ class NetworkInfoWindow(Gtk.Window):
 
         disconnect_box.append(disconnect_button)
         disconnect_box.append(disconnect_label)
+
+
 
         # share_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         # share_box.set_spacing(4)
