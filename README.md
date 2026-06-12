@@ -23,10 +23,7 @@
 [![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![GTK](https://img.shields.io/badge/GTK-4.0-green.svg)](https://www.gtk.org/)
 [![Arch Linux](https://img.shields.io/badge/Arch-AUR-blue.svg)](https://aur.archlinux.org/packages/airctl-bin)
-
-[![GitHub issues](https://img.shields.io/github/issues/pshycodr/airctl)](https://github.com/pshycodr/airctl/issues)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/pshycodr/airctl)](https://github.com/pshycodr/airctl/pulls)
-[![Last commit](https://img.shields.io/github/last-commit/pshycodr/airctl)](https://github.com/pshycodr/airctl/commits/main)
+[![Downloads](https://img.shields.io/endpoint?url=https://badge.dl.aroy.site/%3Fuser=pshycodr%26repo=airctl%26asset=airctl.bin)](https://dl.aroy.site/pshycodr/airctl)
 
 ![AIRCTL Demo](assets/demo.png)
 
