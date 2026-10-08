@@ -13,3 +13,5 @@ wheels/
 out
 build
 dist
+archive
+.vscode
