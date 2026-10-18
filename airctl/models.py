@@ -11,6 +11,13 @@ class scaned_networks:
 
 
 @dataclass
+class ActiveNetwork:
+    connection: str = ""
+    state: str | None = None
+    interface: str | None = None
+
+
+@dataclass
 class NetworkInfo:
     ssid: str
     security: str | None = None
