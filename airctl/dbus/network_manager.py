@@ -6,6 +6,8 @@ from uuid import uuid4
 from dbus_next.errors import DBusError
 from dbus_next.signature import Variant
 
+from airctl.models import ActiveNetwork
+
 from .client import DBusClient
 from .constants import (
     ACCESS_POINT_INTERFACE,
@@ -19,6 +21,7 @@ from .constants import (
     AP_SEC_KEY_MGMT_SAE,
     CONNECTION_INTERFACE,
     DEVICE_INTERFACE,
+    DEVICE_STATE_NAMES,
     DEVICE_TYPE_WIFI,
     NM_INTERFACE,
     NM_PATH,
@@ -492,3 +495,82 @@ class NetworkManagerDBus:
                 "success": False,
                 "message": f"Error connecting to {ssid}: {_error_text(error)}",
             }
+
+    async def _find_active_wifi(self):
+        nm = await self._nm()
+
+        for path in await nm.get_active_connections():
+            properties = await self._all(path, ACTIVE_CONNECTION_INTERFACE)
+            if properties.get("Type") == "802-11-wireless":
+                return path, properties
+
+        return None
+
+    async def _active_ssid(self, properties: dict) -> str:
+        for device_path in properties.get("Devices") or []:
+            try:
+                wireless = await self._all(device_path, WIRELESS_INTERFACE)
+            except DBusError:
+                continue
+
+            ap_path = wireless.get("ActiveAccessPoint")
+
+            if not ap_path or ap_path == "/":
+                continue
+
+            try:
+                access_point = await self._all(ap_path, ACCESS_POINT_INTERFACE)
+            except DBusError:
+                continue
+
+            ssid = _decode_ssid(access_point.get("Ssid"))
+
+            if ssid:
+                return ssid
+
+        return _get(properties, "Id") or ""
+
+    async def disconnect_network(self) -> dict:
+        await self.start()
+
+        active = await self._find_active_wifi()
+
+        if active is None:
+            return {"success": False, "message": "No active Wi-Fi connection to disconnect"}
+
+        active_path, _ = active
+
+        try:
+            nm = await self._nm()
+            await nm.call_deactivate_connection(active_path)
+            return {"success": True, "message": "Successfully disconnected"}
+        except Exception as error:
+            return {"success": False, "message": f"Error disconnecting: {_error_text(error)}"}
+
+    async def get_active_network_info(self) -> ActiveNetwork:
+        await self.start()
+
+        active = await self._find_active_wifi()
+
+        if active is None:
+            return ActiveNetwork()
+
+        _, properties = active
+        ssid = await self._active_ssid(properties)
+        interface = None
+        state = None
+
+        for device_path in properties.get("Devices") or []:
+            try:
+                device = await self._all(device_path, DEVICE_INTERFACE)
+            except DBusError:
+                continue
+
+            interface = device.get("Interface") or interface
+            state = DEVICE_STATE_NAMES.get(device.get("State"), state)
+
+        return ActiveNetwork(
+            connection=ssid or _get(properties, "Id") or "",
+            state=state,
+            interface=interface,
+        )
