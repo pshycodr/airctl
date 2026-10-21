@@ -1,0 +1,47 @@
+name: Feature Request
+description: Suggest an idea or enhancement for Airctl
+title: "[Feature]: "
+labels:
+  - enhancement
+  - triage
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion.
+
+        Please search existing issues first:
+        https://github.com/pshycodr/airctl/issues
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the use case or pain point.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution (optional)
+      description: Describe how you would like to see this implemented.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered (optional)
+      description: Other ways to solve the problem, if any.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and this has not already been requested.
+          required: true

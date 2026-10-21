@@ -1,0 +1,149 @@
+name: Bug Report
+description: Report a problem with Airctl
+title: "[Bug]: "
+labels:
+  - bug
+  - triage
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+
+        Before submitting, please search existing issues:
+        https://github.com/pshycodr/airctl/issues
+
+  - type: input
+    id: version
+    attributes:
+      label: Airctl version
+      description: >
+        Run `airctl --version` if available, or check your installed package
+        version.
+      placeholder: "0.4.1"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: Installation method
+      description: How did you install Airctl?
+      options:
+        - AUR (yay/paru/etc.)
+        - curl install script
+        - Built from source (GitHub release tarball)
+        - Built from source (git clone, main branch)
+        - Assets from the Release (aitctl.bin, airctl.desktop, airctl.png)
+        - Other
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ## System diagnostics
+
+        Run the following commands in a terminal and paste the output below.
+
+        ```sh
+        echo "--- OS ---"
+        grep -E '^(NAME|VERSION)=' /etc/os-release
+
+        echo "--- Kernel ---"
+        uname -r
+
+        echo "--- Desktop session ---"
+        echo "Desktop: ${XDG_CURRENT_DESKTOP:-not set}"
+        echo "Session type: ${XDG_SESSION_TYPE:-not set}"
+
+        echo "--- Airctl ---"
+        airctl --version 2>&1 || echo "Version command unavailable"
+
+        echo "--- NetworkManager ---"
+        nmcli --version 2>&1 || echo "nmcli not found"
+        systemctl is-active NetworkManager 2>&1
+        nmcli general status 2>&1
+        nmcli radio wifi 2>&1
+
+        echo "--- GTK4 / Adwaita / layer-shell ---"
+        pkg-config --modversion gtk4 2>/dev/null || echo "gtk4: not found"
+        pkg-config --modversion libadwaita-1 2>/dev/null || echo "libadwaita-1: not found"
+        pkg-config --modversion gtk4-layer-shell-0 2>/dev/null || echo "gtk4-layer-shell: not found"
+
+        echo "--- Python ---"
+        python3 --version 2>&1
+        python3 -c "import gi; print('PyGObject available')" 2>&1 || echo "PyGObject import failed"
+
+        ```
+
+  - type: textarea
+    id: system-info
+    attributes:
+      label: System diagnostics output
+      description: Paste the complete command output here.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: >
+        Describe the problem and what you expected to happen.
+        Include any error message if available.
+      placeholder: >
+        Airctl fails to connect to a Wi-Fi network and displays an error.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: >
+        List the minimum steps needed to reproduce the problem.
+      placeholder: |
+        1. Launch Airctl.
+        2. Open the Wi-Fi section.
+        3. Attempt to connect to a network.
+        4. Observe the error.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error messages or logs (optional)
+      description: >
+        Paste relevant Airctl error messages or traceback output.
+        Make sure to not include passwords, connection details, IP addresses,
+        or other private information.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Relevant configuration (optional)
+      description: >
+        If the issue involves configuration, include only the relevant
+        settings. Remove secrets and unrelated information.
+      render: toml
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and this has not already been reported.
+          required: true
+        - label: I am using a supported installation method.
+          required: true
+        - label: I included the requested system diagnostics.
+          required: true

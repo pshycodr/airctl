@@ -1,0 +1,21 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: 💬 Questions & Discussions
+    url: https://github.com/pshycodr/airctl/discussions
+    about: >
+      Ask questions, get help with installation or configuration,
+      discuss workflows, or start a feature discussion before opening
+      an issue.
+
+  - name: 💡 Feature Ideas
+    url: https://github.com/pshycodr/airctl/discussions/categories/ideas
+    about: >
+      Have an idea for Airctl? Share it with the community and
+      discuss possible implementations before it becomes an issue.
+
+  - name: 🙋 Q&A
+    url: https://github.com/pshycodr/airctl/discussions/categories/q-a
+    about: >
+      Need help using, building, or contributing to Airctl?
+      Ask the community here.
