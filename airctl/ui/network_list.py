@@ -23,6 +23,7 @@ class NetworkListWidget(Gtk.Box):
         self.connecting_ssid = None
         self.refresh_timeout_id = None
         self.active_network = None
+        self._scanning = False
 
         scrolled = Gtk.ScrolledWindow()
         scrolled.set_vexpand(True)
@@ -103,13 +104,30 @@ class NetworkListWidget(Gtk.Box):
         return False
 
     def _scan_with_spinner(self):
-        self._toggle_loading(True)
-        GLib.timeout_add(300, self._complete_scan)
+        if self._scanning:
+            return
 
-    def _complete_scan(self):
+        self._scanning = True
+        self._toggle_loading(True)
+
+        threading.Thread(target=self._scan_thread, daemon=True).start()
+
+    def _scan_thread(self):
+        networks = NetworkManager.scan_networks()
+        GLib.idle_add(self._complete_scan, networks)
+
+    def _complete_scan(self, networks):
+        self._scanning = False
+
+        if not self.wifi_enabled:
+            self._toggle_loading(False)
+            return False
+
         self._clear_networks()
-        self._populate_networks()
+        self._populate_networks(networks)
         self._toggle_loading(False)
+
+        return False
 
     def _toggle_loading(self, loading):
         self.spinner.set_visible(loading)
@@ -132,11 +150,10 @@ class NetworkListWidget(Gtk.Box):
                 break
             self.networks_list_box.remove(child)
 
-    def _populate_networks(self):
+    def _populate_networks(self, networks):
         if not self.wifi_enabled:
             return
 
-        networks = NetworkManager.scan_networks()
         self.active_network = None
 
         for network in networks:
