@@ -7,7 +7,7 @@ name = "airctl"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "nmcli" },
+    { name = "dbus-next" },
     { name = "nuitka" },
     { name = "pre-commit" },
     { name = "pygobject" },
@@ -18,7 +18,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "nmcli", specifier = ">=1.7.0" },
+    { name = "dbus-next", specifier = ">=0.2.3" },
     { name = "nuitka", specifier = ">=2.8.10" },
     { name = "pre-commit", specifier = ">=4.7.0" },
     { name = "pygobject", specifier = ">=3.54.5" },
@@ -34,6 +34,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/4e/b5/721b8799b04bf9afe054a3899c6cf4e880fcf8563cc71c15610242490a0c/cfgv-3.5.0.tar.gz", hash = "sha256:d5b1034354820651caa73ede66a6294d6e95c1b00acc5e9b098e917404669132", size = 7334, upload-time = "2025-11-19T20:55:51.612Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/db/3c/33bac158f8ab7f89b2e59426d5fe2e4f63f7ed25df84c036890172b412b5/cfgv-3.5.0-py2.py3-none-any.whl", hash = "sha256:a8dc6b26ad22ff227d2634a65cb388215ce6cc96bbcc5cfde7641ae87e8dacc0", size = 7445, upload-time = "2025-11-19T20:55:50.744Z" },
+]
+
+[[package]]
+name = "dbus-next"
+version = "0.2.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ce/45/6a40fbe886d60a8c26f480e7d12535502b5ba123814b3b9a0b002ebca198/dbus_next-0.2.3.tar.gz", hash = "sha256:f4eae26909332ada528c0a3549dda8d4f088f9b365153952a408e28023a626a5", size = 71112, upload-time = "2021-07-25T22:11:28.398Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d2/fc/c0a3f4c4eaa5a22fbef91713474666e13d0ea2a69c84532579490a9f2cc8/dbus_next-0.2.3-py3-none-any.whl", hash = "sha256:58948f9aff9db08316734c0be2a120f6dc502124d9642f55e90ac82ffb16a18b", size = 57885, upload-time = "2021-07-25T22:11:25.466Z" },
 ]
 
 [[package]]
@@ -82,15 +91,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec958cb99bd3efefba235e65cdeb9c84d24a8293ba1d90/mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba", size = 8729, upload-time = "2022-08-14T12:40:10.846Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979, upload-time = "2022-08-14T12:40:09.779Z" },
-]
-
-[[package]]
-name = "nmcli"
-version = "1.7.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/1f/fd/01e2cc2d84cf52653e59a2ce4fe0ebb79b388523be753befe843064394c5/nmcli-1.7.0.tar.gz", hash = "sha256:4fb17b6c33d276a264a27b7109fa1d70987570536fa8852b51830f9f7732f982", size = 21209, upload-time = "2026-01-03T02:15:20.137Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/8a/b7/648f9f6989c6c2860ebb403c762137578ca412fe9932b85ab33dc21517fa/nmcli-1.7.0-py3-none-any.whl", hash = "sha256:27144f03600d5e53c09cfa500cd7160dea61f83c3669ccd736401793b65ce980", size = 19905, upload-time = "2026-01-03T02:15:18.799Z" },
 ]
 
 [[package]]
