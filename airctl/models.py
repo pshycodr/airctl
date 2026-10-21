@@ -52,9 +52,7 @@ class NetworkInfo:
             interface6 = ipaddress.IPv6Interface(ip6_raw)
             ipv6_address = str(interface6.ip)
 
-        dns_servers = [
-            value for key, value in data.items() if key.startswith("IP4.DNS") and value
-        ]
+        dns_servers = [value for key, value in data.items() if key.startswith("IP4.DNS") and value]
 
         lease_time = None
         for key, value in data.items():
@@ -64,7 +62,7 @@ class NetworkInfo:
                     break
 
         return cls(
-            ssid=data.get("802-11-wireless.ssid") or data.get("GENERAL.NAME"),
+            ssid=data.get("802-11-wireless.ssid") or data.get("GENERAL.NAME") or "",
             security=data.get("802-11-wireless-security.key-mgmt"),
             type=data.get("connection.type"),
             mac_address=data.get("802-11-wireless.seen-bssids"),

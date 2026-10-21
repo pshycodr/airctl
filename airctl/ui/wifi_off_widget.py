@@ -11,9 +11,7 @@ class WiFiOffWidget(Gtk.Box):
         self.set_valign(Gtk.Align.CENTER)
         self.set_name("wifi-off-box")
 
-        wifi_off_icon = Gtk.Image.new_from_icon_name(
-            "network-wireless-disabled-symbolic"
-        )
+        wifi_off_icon = Gtk.Image.new_from_icon_name("network-wireless-disabled-symbolic")
         wifi_off_icon.set_pixel_size(64)
         wifi_off_icon.set_halign(Gtk.Align.CENTER)
         wifi_off_icon.set_valign(Gtk.Align.CENTER)

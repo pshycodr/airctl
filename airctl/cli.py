@@ -1,7 +1,9 @@
 import argparse
+
 from rich.console import Console
-from rich.table import Table
 from rich.panel import Panel
+from rich.table import Table
+
 from airctl.network_manager import NetworkManager
 from airctl.utils.cli_help_messages import HelpMessages
 
@@ -13,8 +15,7 @@ class AirctlCli:
 
     def _create_arg_parser(self):
         parser = argparse.ArgumentParser(
-            description="AIRCTL - a modern WiFi management tool for Linux",
-            add_help=False
+            description="AIRCTL - a modern WiFi management tool for Linux", add_help=False
         )
         parser.add_argument("-h", "--help", action="store_true")
 
@@ -131,7 +132,7 @@ class AirctlCli:
         self.console.print(f"[bold yellow]{message}[/]")
 
     def _network_status(self, args=None):
-        if hasattr(args, 'help') and args.help:
+        if hasattr(args, "help") and args.help:
             self._show_command_help("status")
             return 0
 
@@ -156,30 +157,32 @@ class AirctlCli:
         return 0
 
     def _connect_network(self, args):
-        if hasattr(args, 'help') and args.help:
+        if hasattr(args, "help") and args.help:
             self._show_command_help("connect")
             return 0
 
         if not args.ssid:
-            self._warning(
-                "missing parameter 'ssid'.\nrun 'airctl connect -h' for more info"
-            )
+            self._warning("missing parameter 'ssid'.\nrun 'airctl connect -h' for more info")
             return
 
         if NetworkManager._check_known_network(ssid=args.ssid):
             result = NetworkManager.connect_network(ssid=args.ssid)
         else:
             missing = [
-                name for name, value in (
+                name
+                for name, value in (
                     ("password", args.password),
                     ("ifname", args.ifname),
                 )
                 if not value
             ]
             if missing:
-                return self._error(f"missing parameter(s): {', '.join(missing)}\nrun 'airctl connect -h' for more info")
+                return self._error(f"""missing parameter(s): {", ".join(missing)}\n 
+                                       run 'airctl connect -h' for more info""")
 
-            result = NetworkManager.connect_network(ssid=args.ssid, password=args.password, ifname=args.ifname)
+            result = NetworkManager.connect_network(
+                ssid=args.ssid, password=args.password, ifname=args.ifname
+            )
 
         if result["success"]:
             self._success(result["message"])
@@ -190,7 +193,7 @@ class AirctlCli:
         return 1
 
     def _scan_network(self, args):
-        if hasattr(args, 'help') and args.help:
+        if hasattr(args, "help") and args.help:
             self._show_command_help("scan")
             return 0
 
@@ -203,7 +206,7 @@ class AirctlCli:
         return 0
 
     def _disconnect_network(self, args):
-        if hasattr(args, 'help') and args.help:
+        if hasattr(args, "help") and args.help:
             self._show_command_help("disconnect")
             return 0
 
@@ -216,7 +219,7 @@ class AirctlCli:
         return 1
 
     def _forget_network(self, args):
-        if hasattr(args, 'help') and args.help:
+        if hasattr(args, "help") and args.help:
             self._show_command_help("forget")
             return 0
 
@@ -230,7 +233,7 @@ class AirctlCli:
         return 1
 
     def _toogle_wifi(self, args):
-        if hasattr(args, 'help') and args.help:
+        if hasattr(args, "help") and args.help:
             self._show_command_help("toggle")
             return 0
 
@@ -247,7 +250,7 @@ class AirctlCli:
         return 0
 
     def _network_info(self, args):
-        if hasattr(args, 'help') and args.help:
+        if hasattr(args, "help") and args.help:
             self._show_command_help("info")
             return 0
 
@@ -270,7 +273,7 @@ class AirctlCli:
         return 0
 
     def _list_network(self, args=None):
-        if hasattr(args, 'help') and args.help:
+        if hasattr(args, "help") and args.help:
             self._show_command_help("list")
             return 0
 
@@ -316,15 +319,17 @@ class AirctlCli:
             table.add_row(ssid, signal_text, security, band, status)
 
         self.console.print(table)
-    
+
     def _speedtest_network(self, args):
-        if hasattr(args, 'help') and args.help:
+        if hasattr(args, "help") and args.help:
             self._show_command_help("speedtest")
             return 0
 
-        from airctl.speedtest_manager import SpeedtestManager
-        from rich.status import Status
         import threading
+
+        from rich.status import Status
+
+        from airctl.speedtest_manager import SpeedtestManager
 
         if not NetworkManager.wifi_status():
             self._error("WiFi is turned off. Enable WiFi first.")
@@ -334,16 +339,17 @@ class AirctlCli:
         result_data = {}
 
         def on_result(ping, download, upload):
-            result_data['ping'] = ping
-            result_data['download'] = download
-            result_data['upload'] = upload
+            result_data["ping"] = ping
+            result_data["download"] = download
+            result_data["upload"] = upload
             event.set()
 
         def on_error(err):
-            result_data['error'] = err
+            result_data["error"] = err
             event.set()
 
         with Status("[bold cyan]Starting speed test...[/]", console=self.console) as status:
+
             def on_progress(msg):
                 status.update(f"[bold cyan]{msg}[/]")
 
@@ -355,8 +361,8 @@ class AirctlCli:
             except KeyboardInterrupt:
                 self._error("\nSpeed test cancelled by user.")
                 return 1
-        
-        if 'error' in result_data:
+
+        if "error" in result_data:
             self._error(f"Speedtest failed: {result_data['error']}")
             return 1
 

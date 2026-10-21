@@ -1,5 +1,7 @@
 import time
+
 import nmcli
+
 from airctl.models import NetworkInfo, scaned_networks
 
 nmcli.disable_use_sudo()
@@ -54,16 +56,14 @@ class NetworkManager:
                     "ssid": net.ssid,
                     "signal": int(net.signal),
                     "security": net.security,
-                    "freq" : NetworkManager._get_frequency(freq=net.freq)
+                    "freq": NetworkManager._get_frequency(freq=net.freq),
                 }
             )
 
         return networks
 
     @staticmethod
-    def connect_network(
-        ssid: str, password: str | None = None, ifname: str | None = None
-    ):
+    def connect_network(ssid: str, password: str | None = None, ifname: str | None = None):
         try:
             if password:
                 nmcli.device.wifi_connect(ssid, password, ifname)
@@ -116,7 +116,7 @@ class NetworkManager:
         except Exception:
             return None
 
-    def get_active_network_info():
+    def get_active_network_info(self):
         try:
             devices = nmcli.device()
             return devices[0]

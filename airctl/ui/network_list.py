@@ -1,5 +1,5 @@
-from importlib.resources import files, as_file
 import threading
+from importlib.resources import as_file, files
 
 import gi
 
@@ -89,9 +89,7 @@ class NetworkListWidget(Gtk.Box):
 
     def _start_auto_refresh(self):
         if self.refresh_timeout_id is None:
-            self.refresh_timeout_id = GLib.timeout_add(
-                5000, self._auto_refresh_callback
-            )
+            self.refresh_timeout_id = GLib.timeout_add(5000, self._auto_refresh_callback)
 
     def _stop_auto_refresh(self):
         if self.refresh_timeout_id:
@@ -219,9 +217,7 @@ class NetworkListWidget(Gtk.Box):
         network_info_button.add_css_class("circular")
         network_info_button.set_valign(Gtk.Align.CENTER)
         network_info_button.set_tooltip_text("Network Actions and Info")
-        network_info_button.connect(
-            "clicked", lambda _: self._open_network_info(network["ssid"])
-        )
+        network_info_button.connect("clicked", lambda _: self._open_network_info(network["ssid"]))
 
         card.append(network_info_button)
 
@@ -242,9 +238,7 @@ class NetworkListWidget(Gtk.Box):
         speedtest_button.add_css_class("speedtest-inline-btn")
         speedtest_button.set_valign(Gtk.Align.CENTER)
         speedtest_button.set_tooltip_text("Run Speed Test")
-        speedtest_button.connect(
-            "clicked", lambda _: self._open_speedtest()
-        )
+        speedtest_button.connect("clicked", lambda _: self._open_speedtest())
 
         card.append(speedtest_button)
 
@@ -320,9 +314,7 @@ class NetworkListWidget(Gtk.Box):
 
         if network["active"]:
             self._open_network_info(network["ssid"])
-        elif network["security"] and NetworkManager._check_known_network(
-            network["ssid"]
-        ):
+        elif network["security"] and NetworkManager._check_known_network(network["ssid"]):
             self._show_connection_confirm(network["ssid"])
         elif network["security"]:
             self._show_password_dialog(network["ssid"])
@@ -330,7 +322,11 @@ class NetworkListWidget(Gtk.Box):
             self._connect_to_network(network["ssid"])
 
     def _open_speedtest(self):
-        if hasattr(self, '_speedtest_dialog') and self._speedtest_dialog and not self._speedtest_dialog._is_closed:
+        if (
+            hasattr(self, "_speedtest_dialog")
+            and self._speedtest_dialog
+            and not self._speedtest_dialog._is_closed
+        ):
             self._speedtest_dialog.present()
             return
         self._speedtest_dialog = SpeedtestDialog(self.parent)
@@ -353,9 +349,7 @@ class NetworkListWidget(Gtk.Box):
             if confirmed:
                 self._connect_to_network(ssid)
 
-        DialogBox(self.parent, ssid, on_confirm).confirmation(
-            message=f"Connect to {ssid}?"
-        )
+        DialogBox(self.parent, ssid, on_confirm).confirmation(message=f"Connect to {ssid}?")
 
     def _connect_to_network(self, ssid, password=None):
         self.connecting_ssid = ssid

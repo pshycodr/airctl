@@ -1,4 +1,5 @@
 import gi
+
 gi.require_version("Gtk", "4.0")
 gi.require_version("Gdk", "4.0")
 from gi.repository import Gdk, Gtk
@@ -41,7 +42,9 @@ class NetworkManagerErrorWidget(Gtk.Box):
         check_entry.set_width_chars(35)
 
         copy_button = Gtk.Button(label="Copy")
-        copy_button.connect("clicked", lambda _: self._copy_to_clipboard("systemctl status NetworkManager"))
+        copy_button.connect(
+            "clicked", lambda _: self._copy_to_clipboard("systemctl status NetworkManager")
+        )
 
         cmd_box.append(check_entry)
         cmd_box.append(copy_button)
@@ -59,7 +62,10 @@ class NetworkManagerErrorWidget(Gtk.Box):
         enable_entry.set_width_chars(42)
 
         enable_copy_button = Gtk.Button(label="Copy")
-        enable_copy_button.connect("clicked", lambda _: self._copy_to_clipboard("sudo systemctl enable --now NetworkManager"))
+        enable_copy_button.connect(
+            "clicked",
+            lambda _: self._copy_to_clipboard("sudo systemctl enable --now NetworkManager"),
+        )
 
         enable_cmd_box.append(enable_entry)
         enable_cmd_box.append(enable_copy_button)

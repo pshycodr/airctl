@@ -1,7 +1,8 @@
 import gi
 
 gi.require_version("Gtk", "4.0")
-from gi.repository import Gtk, GLib
+from gi.repository import GLib, Gtk
+
 from airctl.speedtest_manager import SpeedtestManager
 
 
@@ -21,12 +22,12 @@ class SpeedtestDialog(Gtk.Window):
 
         nav_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         nav_box.set_margin_bottom(12)
-        
+
         self.back_button = Gtk.Button()
         self.back_button.set_icon_name("go-previous-symbolic")
         self.back_button.set_halign(Gtk.Align.START)
         self.back_button.connect("clicked", lambda _: self.close())
-        
+
         nav_box.append(self.back_button)
         box.append(nav_box)
 
@@ -67,15 +68,20 @@ class SpeedtestDialog(Gtk.Window):
         )
 
     def update_status(self, msg):
-        if getattr(self, '_is_closed', False): return False
+        if getattr(self, "_is_closed", False):
+            return False
         self.status_label.set_label(msg)
         return False
 
     def show_results(self, ping, download, upload):
-        if getattr(self, '_is_closed', False): return False
+        if getattr(self, "_is_closed", False):
+            return False
         self.spinner.stop()
         self.status_label.set_label("Test Complete")
-        res = f"Ping: <b>{ping:.2f} ms</b>\nDownload: <b>{download:.2f} Mbps</b>\nUpload: <b>{upload:.2f} Mbps</b>"
+        res = f"""Ping: <b>{ping:.2f} ms</b>\n
+                  Download: <b>{download:.2f} Mbps</b>\n
+                  Upload: <b>{upload:.2f} Mbps</b>"""
+
         self.result_label.set_markup(res)
         self.start_button.set_sensitive(True)
         self.start_button.set_label("Test Again")
@@ -84,7 +90,8 @@ class SpeedtestDialog(Gtk.Window):
         return False
 
     def show_error(self, err):
-        if getattr(self, '_is_closed', False): return False
+        if getattr(self, "_is_closed", False):
+            return False
         self.spinner.stop()
         self.status_label.set_label("Error occurred")
         self.result_label.set_label(str(err))

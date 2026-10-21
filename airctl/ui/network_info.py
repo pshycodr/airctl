@@ -8,8 +8,6 @@ from airctl.network_manager import NetworkManager
 from airctl.ui.dialog_box import DialogBox
 
 
-
-
 class NetworkInfoWindow(Gtk.Window):
     def __init__(self, parent, ssid: str):
         super().__init__()
@@ -138,8 +136,6 @@ class NetworkInfoWindow(Gtk.Window):
         disconnect_box.append(disconnect_button)
         disconnect_box.append(disconnect_label)
 
-
-
         # share_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         # share_box.set_spacing(4)
         # share_box.set_halign(Gtk.Align.CENTER)
@@ -186,14 +182,10 @@ class NetworkInfoWindow(Gtk.Window):
                 if self.network_info.frequency > 100
                 else self.network_info.frequency
             )
-            items.append(
-                ("network-wireless-symbolic", "Frequency", f"{frequency_ghz} GHz")
-            )
+            items.append(("network-wireless-symbolic", "Frequency", f"{frequency_ghz} GHz"))
 
         if self.network_info.security is not None:
-            items.append(
-                ("security-high-symbolic", "Security", self.get_security_text())
-            )
+            items.append(("security-high-symbolic", "Security", self.get_security_text()))
 
         for i, (icon_name, title, subtitle) in enumerate(items):
             item_box = self.create_info_item(icon_name, title, subtitle)
@@ -273,14 +265,10 @@ class NetworkInfoWindow(Gtk.Window):
             details.append(("IPv6 address", self.network_info.ipv6_address))
 
         if self.network_info.transmit_link_speed:
-            details.append(
-                ("Transmit link speed", f"{self.network_info.transmit_link_speed} Mbps")
-            )
+            details.append(("Transmit link speed", f"{self.network_info.transmit_link_speed} Mbps"))
 
         if self.network_info.receive_link_speed:
-            details.append(
-                ("Receive link speed", f"{self.network_info.receive_link_speed} Mbps")
-            )
+            details.append(("Receive link speed", f"{self.network_info.receive_link_speed} Mbps"))
 
         if self.network_info.interface:
             details.append(("Interface", self.network_info.interface))
@@ -289,9 +277,7 @@ class NetworkInfoWindow(Gtk.Window):
             details.append(("UUID", self.network_info.uuid))
 
         if self.network_info.dhcp_lease_time:
-            details.append(
-                ("DHCP lease time", f"{self.network_info.dhcp_lease_time} seconds")
-            )
+            details.append(("DHCP lease time", f"{self.network_info.dhcp_lease_time} seconds"))
 
         for i, (label, value) in enumerate(details):
             detail_box = self.create_detail_row(label, value)

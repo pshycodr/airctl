@@ -1,4 +1,5 @@
 import os
+
 import gi
 
 gi.require_version("Gtk4LayerShell", "1.0")
@@ -7,7 +8,7 @@ from gi.repository import Gtk4LayerShell
 
 
 def setup_overlay_window(window):
-    is_wayland = (os.environ.get("XDG_SESSION_TYPE") == "wayland")
+    is_wayland = os.environ.get("XDG_SESSION_TYPE") == "wayland"
 
     if not is_wayland:
         return

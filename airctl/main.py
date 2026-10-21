@@ -1,6 +1,5 @@
 import sys
 
-
 CLI_COMMANDS = {
     "status",
     "list",
@@ -16,12 +15,14 @@ CLI_COMMANDS = {
 
 def run_cli(argv):
     from airctl.cli import AirctlCli
+
     cli = AirctlCli()
     return cli.run(argv)
 
 
 def run_gui():
     from airctl.gui import run
+
     return run()
 
 
