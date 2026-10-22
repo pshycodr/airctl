@@ -100,8 +100,7 @@ source .venv/bin/activate
 
 * Python 3.12 or higher
 * GTK 4
-* NetworkManager
-* nmcli
+* NetworkManager (D-Bus interface)
 
 ## Usage
 
@@ -130,7 +129,7 @@ airctl -h
 ## Dependencies
 
 * PyGObject (gi)
-* nmcli
+* dbus-next
 * rich (for CLI output)
 
 All dependencies are defined in `pyproject.toml` and handled via `uv`.
