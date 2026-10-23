@@ -70,7 +70,7 @@ def show_about_dialog(window, action, param):
     about.add_credit_section(
         "Thanks to",
         [
-            "nmcli team",
+            "NetworkManager team",
             "GTK developers",
             "Open source community",
         ],
