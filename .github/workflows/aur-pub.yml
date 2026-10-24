@@ -1,4 +1,3 @@
-
 name: Publish to AUR
 
 on:
@@ -6,13 +5,21 @@ on:
     workflows: ["Build and Release"]
     types: [completed]
 
+  workflow_dispatch:
+
 permissions:
   contents: read
   actions: read
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   publish:
-    if: github.event.workflow_run.conclusion == 'success'
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'release'
     runs-on: ubuntu-latest
 
     container:
@@ -21,13 +28,8 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
-          pacman -Sy --noconfirm \
-            git openssh sudo pacman-contrib github-cli
-
-      - name: Checkout release source
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          pacman -Sy --noconfirm --needed \
+            git openssh sudo pacman-contrib
 
       - name: Download release tag metadata
         uses: actions/download-artifact@v4
@@ -42,29 +44,24 @@ jobs:
           AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
           AUR_KNOWN_HOSTS: ${{ secrets.AUR_KNOWN_HOSTS }}
         run: |
+          set -euo pipefail
+
           useradd -m builder
-          chown -R builder:builder "$GITHUB_WORKSPACE"
 
-          install -d -m 700 -o builder -g builder \
-            /home/builder/.ssh
+          install -d -m 700 -o builder -g builder /home/builder/.ssh
 
-          printf '%s\n' "$AUR_SSH_PRIVATE_KEY" \
-            > /home/builder/.ssh/id_ed25519
-
+          printf '%s\n' "$AUR_SSH_PRIVATE_KEY" > /home/builder/.ssh/id_ed25519
           chmod 600 /home/builder/.ssh/id_ed25519
 
-          printf '%s\n' "$AUR_KNOWN_HOSTS" \
-            > /home/builder/.ssh/known_hosts
+          printf '%s\n' "$AUR_KNOWN_HOSTS" > /home/builder/.ssh/known_hosts
 
           chown -R builder:builder /home/builder/.ssh
 
       - name: Update and publish AUR package
-        env:
-          GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
           set -euo pipefail
 
-          TAG="$(cat metadata/release-tag.txt)"
+          TAG="$(tr -d '[:space:]' < metadata/release-tag.txt)"
           PKGVER="${TAG#v}"
 
           if [[ ! "$PKGVER" =~ ^[0-9]+(\.[0-9]+)*$ ]]; then
@@ -72,33 +69,22 @@ jobs:
             exit 1
           fi
 
-          export PKGVER
-
-          chown -R builder:builder "$GITHUB_WORKSPACE"
-
-          sudo -u builder env \
-            GITHUB_WORKSPACE="$GITHUB_WORKSPACE" \
-            PKGVER="$PKGVER" \
-            bash <<'SCRIPT'
+          sudo -H -u builder env PKGVER="$PKGVER" bash <<'SCRIPT'
           set -euo pipefail
 
-          cd "$GITHUB_WORKSPACE"
+          cd "$HOME"
 
-          git clone \
-            ssh://aur@aur.archlinux.org/airctl-bin.git \
-            aur-work
-
+          git clone ssh://aur@aur.archlinux.org/airctl-bin.git aur-work
           cd aur-work
 
-          # Update the package version.
-          sed -i \
-            "s/^pkgver=.*/pkgver=$PKGVER/" \
-            PKGBUILD
+          # New upstream version: bump pkgver, reset pkgrel.
+          sed -i "s/^pkgver=.*/pkgver=$PKGVER/" PKGBUILD
+          sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
 
-          # Download sources and regenerate checksums.
+          # Download sources and regenerate checksums
           updpkgsums
 
-          # Regenerate AUR metadata.
+          # Regenerate AUR metadata
           makepkg --printsrcinfo > .SRCINFO
 
           git config user.name "Airctl Release Bot"
