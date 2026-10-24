@@ -51,7 +51,7 @@ def show_about_dialog(window, action, param):
 
     about.set_program_name("AIRCTL")
 
-    about.set_version("v0.4.0")
+    about.set_version("v0.5.0")
 
     about.set_comments("A modern WiFi management tool for Linux")
 
@@ -63,7 +63,7 @@ def show_about_dialog(window, action, param):
 
     about.set_license_type(Gtk.License.GPL_3_0)
 
-    about.set_logo_icon_name("network-wireless-symbolic")
+    about.set_logo_icon_name("dev.anishroy.airctl")
 
     about.set_copyright("© 2026 pshycodr")
 
