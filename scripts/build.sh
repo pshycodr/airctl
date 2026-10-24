@@ -34,7 +34,7 @@ nuitka \
   --include-package=gi.repository \
   --include-package=rich \
   --include-package-data=rich \
-  --include-module=nmcli \
+  --include-package=dbus_next \
   --include-data-files=airctl/styles/style.css=airctl/styles/style.css \
   --include-data-files=airctl/assets/speedtest.svg=airctl/assets/speedtest.svg \
   --assume-yes-for-downloads \

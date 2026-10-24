@@ -19,7 +19,8 @@ airctl/
 │   ├── main.py               # Entry point
 │   ├── main_cli.py           # CLI argument parser
 │   ├── models.py             # Data models
-│   ├── network_manager.py    # NetworkManager interface
+│   ├── network_manager.py    # Synchronous NetworkManager facade
+│   ├── dbus/                 # NetworkManager D-Bus client
 │   ├── styles/
 │   │   └── style.css         # Application styling
 │   └── ui/
@@ -73,7 +74,8 @@ source .venv/bin/activate
 Familiarize yourself with the codebase:
 
 - `airctl/models.py`: Data structures for network information
-- `airctl/network_manager.py`: Interface to NetworkManager via nmcli
+- `airctl/network_manager.py`: Synchronous facade over the NetworkManager D-Bus API
+- `airctl/dbus/`: NetworkManager D-Bus client and async operations
 - `airctl/ui/`: All GTK4 UI components
 - `airctl/styles/style.css`: Application styling
 - `airctl/main.py`: Application entry point

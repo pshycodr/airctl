@@ -201,7 +201,7 @@ class AirctlCli:
         if not result["success"]:
             self._error(result["message"])
             return 1
-        networks = NetworkManager.scan_networks()
+        networks = result.get("networks") or []
         self._print_network_table(networks)
         return 0
 
