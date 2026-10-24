@@ -1,0 +1,116 @@
+
+name: Publish to AUR
+
+on:
+  workflow_run:
+    workflows: ["Build and Release"]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  publish:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+
+    container:
+      image: archlinux:base-devel
+
+    steps:
+      - name: Install dependencies
+        run: |
+          pacman -Sy --noconfirm \
+            git openssh sudo pacman-contrib github-cli
+
+      - name: Checkout release source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Download release tag metadata
+        uses: actions/download-artifact@v4
+        with:
+          name: release-metadata
+          path: metadata
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Configure build user and SSH
+        env:
+          AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          AUR_KNOWN_HOSTS: ${{ secrets.AUR_KNOWN_HOSTS }}
+        run: |
+          useradd -m builder
+          chown -R builder:builder "$GITHUB_WORKSPACE"
+
+          install -d -m 700 -o builder -g builder \
+            /home/builder/.ssh
+
+          printf '%s\n' "$AUR_SSH_PRIVATE_KEY" \
+            > /home/builder/.ssh/id_ed25519
+
+          chmod 600 /home/builder/.ssh/id_ed25519
+
+          printf '%s\n' "$AUR_KNOWN_HOSTS" \
+            > /home/builder/.ssh/known_hosts
+
+          chown -R builder:builder /home/builder/.ssh
+
+      - name: Update and publish AUR package
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+        run: |
+          set -euo pipefail
+
+          TAG="$(cat metadata/release-tag.txt)"
+          PKGVER="${TAG#v}"
+
+          if [[ ! "$PKGVER" =~ ^[0-9]+(\.[0-9]+)*$ ]]; then
+            echo "Invalid release version: $TAG"
+            exit 1
+          fi
+
+          export PKGVER
+
+          chown -R builder:builder "$GITHUB_WORKSPACE"
+
+          sudo -u builder env \
+            GITHUB_WORKSPACE="$GITHUB_WORKSPACE" \
+            PKGVER="$PKGVER" \
+            bash <<'SCRIPT'
+          set -euo pipefail
+
+          cd "$GITHUB_WORKSPACE"
+
+          git clone \
+            ssh://aur@aur.archlinux.org/airctl-bin.git \
+            aur-work
+
+          cd aur-work
+
+          # Update the package version.
+          sed -i \
+            "s/^pkgver=.*/pkgver=$PKGVER/" \
+            PKGBUILD
+
+          # Download sources and regenerate checksums.
+          updpkgsums
+
+          # Regenerate AUR metadata.
+          makepkg --printsrcinfo > .SRCINFO
+
+          git config user.name "Airctl Release Bot"
+          git config user.email "airctl-release-bot@users.noreply.github.com"
+
+          git add PKGBUILD .SRCINFO
+
+          if git diff --cached --quiet; then
+            echo "No AUR changes to publish."
+            exit 0
+          fi
+
+          git commit -m "Update to v$PKGVER"
+          git push origin master
+          SCRIPT

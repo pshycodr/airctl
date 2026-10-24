@@ -1,0 +1,80 @@
+
+name: Build and Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: archlinux:base-devel
+
+    steps:
+      - name: Install system dependencies
+        run: |
+          pacman -Syu --noconfirm --needed \
+            git \
+            python \
+            uv \
+            gtk4 \
+            gobject-introspection \
+            python-gobject \
+            patchelf \
+            github-cli
+
+      - name: Checkout release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Install project dependencies
+        run: uv sync --dev
+
+      - name: Check Python formatting
+        run: uv run --with ruff ruff format --check .
+
+      - name: Lint Python code
+        run: uv run --with ruff ruff check .
+
+      - name: Build Airctl
+        run: |
+          source .venv/bin/activate
+          chmod +x scripts/build.sh
+          ./scripts/build.sh
+
+      - name: Verify build output
+        run: |
+          test -s out/airctl.bin
+          chmod +x out/airctl.bin
+          test -f assets/airctl.desktop
+          test -f assets/airctl.png
+
+      - name: Upload assets to GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload \
+            "${{ github.event.release.tag_name }}" \
+            out/airctl.bin#airctl.bin \
+            assets/airctl.desktop \
+            assets/airctl.png \
+            --clobber
+
+      - name: Prepare release metadata
+        run: |
+          mkdir -p metadata
+          echo "${{ github.event.release.tag_name }}" \
+            > metadata/release-tag.txt
+
+      - name: Upload release metadata for AUR workflow
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-metadata
+          path: metadata/release-tag.txt
+          retention-days: 7
