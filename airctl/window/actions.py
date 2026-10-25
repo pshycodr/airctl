@@ -63,7 +63,7 @@ def show_about_dialog(window, action, param):
 
     about.set_license_type(Gtk.License.GPL_3_0)
 
-    about.set_logo_icon_name("dev.anishroy.airctl")
+    about.set_logo_icon_name("airctl")
 
     about.set_copyright("© 2026 pshycodr")
 
