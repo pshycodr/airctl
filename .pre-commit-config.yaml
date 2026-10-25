@@ -1,6 +1,9 @@
 repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.13.0
+  - repo: local
     hooks:
-
-      - id: ruff-format
+      - id: project-pre-commit
+        name: Project pre-commit checks
+        entry: bash scripts/pre-commit.sh
+        language: system
+        pass_filenames: false
+        always_run: true
