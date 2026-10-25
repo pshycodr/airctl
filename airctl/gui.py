@@ -2,6 +2,7 @@ import sys
 
 import gi
 from config.settings import load_settings
+from notifications.app_update import check_for_updates_async, setup_update_notifications
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Gdk", "4.0")
@@ -154,6 +155,8 @@ class MyApp(Gtk.Application):
 def run():
     app = MyApp()
 
+    setup_update_notifications(app)
     load_settings()
+    check_for_updates_async(app)
 
     return app.run(sys.argv)
