@@ -1,6 +1,7 @@
 import sys
 
 import gi
+from config.settings import load_settings
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Gdk", "4.0")
@@ -152,4 +153,7 @@ class MyApp(Gtk.Application):
 
 def run():
     app = MyApp()
+
+    load_settings()
+
     return app.run(sys.argv)
