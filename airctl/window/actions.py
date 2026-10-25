@@ -1,5 +1,6 @@
 import subprocess
 
+from config.constants import VERSION
 from gi.repository import Gio, Gtk
 
 
@@ -51,7 +52,7 @@ def show_about_dialog(window, action, param):
 
     about.set_program_name("AIRCTL")
 
-    about.set_version("v0.5.0")
+    about.set_version(VERSION)
 
     about.set_comments("A modern WiFi management tool for Linux")
 
