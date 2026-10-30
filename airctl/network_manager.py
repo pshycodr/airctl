@@ -1,4 +1,5 @@
-from airctl.dbus.network_manager import NetworkManagerDBus, _band
+from airctl.dbus.network_manager import NetworkManagerDBus
+from airctl.dbus.network_manager.parsing import _band
 from airctl.dbus.sync import DBusRunner
 from airctl.models import ActiveNetwork
 
