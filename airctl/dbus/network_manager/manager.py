@@ -6,7 +6,6 @@ from dbus_next.signature import Variant
 
 from airctl.models import ActiveNetwork, NetworkInfo
 
-from ..client import DBusClient
 from ..constants import (
     ACCESS_POINT_INTERFACE,
     ACTIVE_CONNECTION_INTERFACE,
@@ -28,6 +27,7 @@ from ..constants import (
     WIRED_INTERFACE,
     WIRELESS_INTERFACE,
 )
+from .base import NMBase
 from .parsing import (
     _band,
     _connection_matches,
@@ -42,29 +42,11 @@ from .parsing import (
 )
 
 
-class NetworkManagerDBus:
-    def __init__(self):
-        self.dbus = DBusClient()
-
-    async def start(self):
-        await self.dbus.connect()
-
-    async def close(self):
-        await self.dbus.close()
-
-    async def _nm(self):
-        return await self.dbus.interface(NM_SERVICE, NM_PATH, NM_INTERFACE)
-
-    async def _all(self, path: str, interface: str) -> dict:
-        return await self.dbus.get_all_properties(NM_SERVICE, path, interface)
-
-    async def _get(self, path: str, interface: str, name: str):
-        return await self.dbus.get_property(NM_SERVICE, path, interface, name)
-
+class NetworkManagerDBus(NMBase):
     async def is_running(self) -> bool:
         try:
             await self.start()
-            return bool(await self._get(NM_PATH, NM_INTERFACE, "Version"))
+            return bool(await self._prop(NM_PATH, NM_INTERFACE, "Version"))
         except Exception:
             return False
 
@@ -282,7 +264,7 @@ class NetworkManagerDBus:
 
         while loop.time() < deadline:
             try:
-                state = await self._get(active_path, ACTIVE_CONNECTION_INTERFACE, "State")
+                state = await self._prop(active_path, ACTIVE_CONNECTION_INTERFACE, "State")
             except DBusError:
                 return False
 
