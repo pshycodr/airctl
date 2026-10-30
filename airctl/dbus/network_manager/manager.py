@@ -21,15 +21,12 @@ from ..constants import (
     NM_INTERFACE,
     NM_PATH,
     NM_SERVICE,
-    NM_SETTINGS_PATH,
-    SETTINGS_INTERFACE,
     WIRED_INTERFACE,
     WIRELESS_INTERFACE,
 )
 from .devices import DeviceMixin
 from .parsing import (
     _band,
-    _connection_matches,
     _decode_ssid,
     _dns_servers,
     _error_text,
@@ -39,9 +36,10 @@ from .parsing import (
     _netmask,
     _security_from_ap,
 )
+from .profiles import ProfileMixin
 
 
-class NetworkManagerDBus(DeviceMixin):
+class NetworkManagerDBus(DeviceMixin, ProfileMixin):
     async def is_running(self) -> bool:
         try:
             await self.start()
@@ -168,32 +166,6 @@ class NetworkManagerDBus(DeviceMixin):
             "success": True,
             "networks": await self.scan_networks(request_scan=False),
         }
-
-    async def _find_connection(self, ssid: str):
-        settings = await self.dbus.interface(NM_SERVICE, NM_SETTINGS_PATH, SETTINGS_INTERFACE)
-
-        for path in await settings.call_list_connections():
-            connection = await self.dbus.interface(NM_SERVICE, path, CONNECTION_INTERFACE)
-
-            try:
-                data = await connection.call_get_settings()
-            except DBusError:
-                continue
-
-            if _connection_matches(data, ssid):
-                return path, data
-
-        return None, None
-
-    async def _connection_exists(self, path: str) -> bool:
-        settings = await self.dbus.interface(NM_SERVICE, NM_SETTINGS_PATH, SETTINGS_INTERFACE)
-
-        return path in await settings.call_list_connections()
-
-    async def check_known_network(self, ssid: str) -> bool:
-        path, _ = await self._find_connection(ssid)
-
-        return path is not None
 
     def _build_settings(self, ssid: str, password: str | None = None) -> dict:
         settings = {
