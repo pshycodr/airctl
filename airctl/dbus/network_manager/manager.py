@@ -8,8 +8,8 @@ from dbus_next.signature import Variant
 
 from airctl.models import ActiveNetwork, NetworkInfo
 
-from .client import DBusClient
-from .constants import (
+from ..client import DBusClient
+from ..constants import (
     ACCESS_POINT_INTERFACE,
     ACTIVE_CONNECTION_INTERFACE,
     ACTIVE_CONNECTION_STATE_ACTIVATED,
