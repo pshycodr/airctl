@@ -1,5 +1,6 @@
 from ..client import DBusClient
 from ..constants import NM_INTERFACE, NM_PATH, NM_SERVICE
+from .advanced import parse_nm_version
 
 
 class NMBase:
@@ -20,3 +21,11 @@ class NMBase:
 
     async def _prop(self, path: str, interface: str, name: str):
         return await self.dbus.get_property(NM_SERVICE, path, interface, name)
+
+    async def version(self) -> tuple[int, ...]:
+        try:
+            value = await self._prop(NM_PATH, NM_INTERFACE, "Version")
+        except Exception:
+            return (0,)
+
+        return parse_nm_version(value)
