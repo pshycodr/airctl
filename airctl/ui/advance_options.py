@@ -11,6 +11,7 @@ class AdvancedOptionsBox(Gtk.Box):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=8)
 
         self._change_callback = None
+        self._expand_callback = None
         self._build_toggle()
         self._build_options()
         self.set_expanded(False)
@@ -183,6 +184,16 @@ class AdvancedOptionsBox(Gtk.Box):
     def set_change_callback(self, callback):
         self._change_callback = callback
 
+    def set_expand_callback(self, callback):
+        self._expand_callback = callback
+
+    def expanded_height(self) -> int:
+        content = self.revealer.get_child()
+        if content is None:
+            return 0
+
+        return content.get_preferred_size().natural_size.height + self.get_spacing()
+
     def is_expanded(self) -> bool:
         return self.revealer.get_reveal_child()
 
@@ -194,6 +205,8 @@ class AdvancedOptionsBox(Gtk.Box):
         self.toggle_button.set_tooltip_text(
             "Hide advanced options" if expanded else "Show advanced options"
         )
+        if self._expand_callback is not None:
+            self._expand_callback(expanded)
 
     def get_options(self) -> dict:
         proxy_values = ["none", "manual", "pac"]

@@ -20,8 +20,6 @@ class DialogBox:
             title="",
             modal=True,
             transient_for=self.parent,
-            default_width=400,
-            # default_height=200,
         )
 
         self.content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
@@ -31,6 +29,7 @@ class DialogBox:
         self.content_box.set_margin_end(24)
 
         self.dialog_window.set_child(self.content_box)
+        self.dialog_window.set_size_request(400, -1)
 
     def password(self):
         if self._shown:
@@ -108,7 +107,22 @@ class DialogBox:
 
             finish((password, options))
 
+        def resize_for_advanced(expanded):
+            if not expanded:
+                return
+
+            width = max(self.dialog_window.get_width(), 400)
+            content_height = self.content_box.get_preferred_size().natural_size.height
+            revealer_height = advanced.revealer.get_preferred_size().natural_size.height
+            extra_height = advanced.expanded_height() if revealer_height == 0 else 0
+            desired_height = max(
+                self.dialog_window.get_height(),
+                content_height + extra_height,
+            )
+            self.dialog_window.set_size_request(width, desired_height)
+
         advanced.set_change_callback(clear_error)
+        advanced.set_expand_callback(resize_for_advanced)
         entry.connect("changed", lambda *_: clear_error())
 
         cancel = Gtk.Button(label="Cancel")
