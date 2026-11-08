@@ -84,6 +84,17 @@
     box-shadow: 0 0 0 3px rgba(34, 139, 230, 0.1);
 }
 
+.advanced-options-toggle {
+    min-width: 28px;
+    min-height: 28px;
+    padding: 0;
+}
+
+.inline-error {
+    color: rgba(255, 107, 107, 0.95);
+    font-size: 12px;
+}
+
 .network-info-button {
     opacity: 0.7;
     transition: all 0.2s ease;

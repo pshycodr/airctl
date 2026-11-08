@@ -3,6 +3,9 @@ import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk
 
+from airctl.advanced_options import validate_password
+from airctl.ui.advance_options import AdvancedOptionsBox
+
 
 class DialogBox:
     def __init__(self, parent, ssid: str, callback):
@@ -17,8 +20,6 @@ class DialogBox:
             title="",
             modal=True,
             transient_for=self.parent,
-            default_width=400,
-            # default_height=200,
         )
 
         self.content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
@@ -28,6 +29,7 @@ class DialogBox:
         self.content_box.set_margin_end(24)
 
         self.dialog_window.set_child(self.content_box)
+        self.dialog_window.set_size_request(400, -1)
 
     def password(self):
         if self._shown:
@@ -54,6 +56,14 @@ class DialogBox:
         entry = Gtk.PasswordEntry()
         entry.set_show_peek_icon(True)
 
+        advanced = AdvancedOptionsBox()
+
+        error_label = Gtk.Label()
+        error_label.set_halign(Gtk.Align.START)
+        error_label.set_wrap(True)
+        error_label.set_visible(False)
+        error_label.add_css_class("inline-error")
+
         entry_box.append(entry_label)
         entry_box.append(entry)
 
@@ -71,15 +81,59 @@ class DialogBox:
             self.dialog_window.destroy()
             self.callback(value)
 
+        def clear_error():
+            error_label.set_visible(False)
+
+        def show_error(message):
+            error_label.set_text(message)
+            error_label.set_visible(True)
+
+        def submit():
+            clear_error()
+            password = entry.get_text()
+
+            try:
+                validate_password(password)
+            except ValueError as error:
+                show_error(str(error))
+                return
+
+            try:
+                options = advanced.get_options()
+            except ValueError as error:
+                advanced.set_expanded(True)
+                show_error(str(error))
+                return
+
+            finish((password, options))
+
+        def resize_for_advanced(expanded):
+            if not expanded:
+                return
+
+            width = max(self.dialog_window.get_width(), 400)
+            content_height = self.content_box.get_preferred_size().natural_size.height
+            revealer_height = advanced.revealer.get_preferred_size().natural_size.height
+            extra_height = advanced.expanded_height() if revealer_height == 0 else 0
+            desired_height = max(
+                self.dialog_window.get_height(),
+                content_height + extra_height,
+            )
+            self.dialog_window.set_size_request(width, desired_height)
+
+        advanced.set_change_callback(clear_error)
+        advanced.set_expand_callback(resize_for_advanced)
+        entry.connect("changed", lambda *_: clear_error())
+
         cancel = Gtk.Button(label="Cancel")
         cancel.set_size_request(100, -1)
         cancel.connect("clicked", lambda *_: finish(None))
 
         connect = Gtk.Button(label="Connect")
         connect.set_size_request(100, -1)
-        connect.connect("clicked", lambda *_: finish(entry.get_text()))
+        connect.connect("clicked", lambda *_: submit())
 
-        entry.connect("activate", lambda *_: finish(entry.get_text()))
+        entry.connect("activate", lambda *_: submit())
 
         self.dialog_window.connect("close-request", lambda *_: finish(None))
 
@@ -88,6 +142,8 @@ class DialogBox:
 
         self.content_box.append(header_box)
         self.content_box.append(entry_box)
+        self.content_box.append(advanced)
+        self.content_box.append(error_label)
         self.content_box.append(buttons)
 
         self.dialog_window.present()
