@@ -355,11 +355,12 @@ class NetworkListWidget(Gtk.Box):
         info_window.present()
 
     def _show_password_dialog(self, ssid):
-        def on_password(password):
-            if password:
-                self._connect_to_network(ssid, password)
+        def on_credentials(credentials):
+            if credentials:
+                password, advanced_options = credentials
+                self._connect_to_network(ssid, password, advanced_options)
 
-        DialogBox(self.parent, ssid, on_password).password()
+        DialogBox(self.parent, ssid, on_credentials).password()
 
     def _show_connection_confirm(self, ssid):
         def on_confirm(confirmed):
@@ -368,12 +369,14 @@ class NetworkListWidget(Gtk.Box):
 
         DialogBox(self.parent, ssid, on_confirm).confirmation(message=f"Connect to {ssid}?")
 
-    def _connect_to_network(self, ssid, password=None):
+    def _connect_to_network(self, ssid, password=None, advanced_options=None):
         self.connecting_ssid = ssid
         self._scan_with_spinner()
 
         def connect_thread():
-            result = NetworkManager.connect_network(ssid, password)
+            result = NetworkManager.connect_network(
+                ssid, password, advanced_options=advanced_options
+            )
             GLib.idle_add(self._show_connection_result, ssid, result)
 
         threading.Thread(target=connect_thread, daemon=True).start()
