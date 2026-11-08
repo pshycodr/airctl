@@ -4,6 +4,8 @@ from uuid import uuid4
 from dbus_next.errors import DBusError
 from dbus_next.signature import Variant
 
+from airctl.advanced_options import normalize_advanced_options
+
 from ..constants import (
     ACTIVE_CONNECTION_INTERFACE,
     ACTIVE_CONNECTION_STATE_ACTIVATED,
@@ -11,13 +13,20 @@ from ..constants import (
     CONNECTION_INTERFACE,
     NM_SERVICE,
 )
+from .advanced import apply_advanced_settings
 from .devices import DeviceMixin
 from .parsing import _error_text, _get
 from .profiles import ProfileMixin
 
 
 class ConnectionMixin(DeviceMixin, ProfileMixin):
-    def _build_settings(self, ssid: str, password: str | None = None) -> dict:
+    def _build_settings(
+        self,
+        ssid: str,
+        password: str | None = None,
+        advanced_options: dict | None = None,
+        nm_version: tuple[int, ...] | None = None,
+    ) -> dict:
         settings = {
             "connection": {
                 "id": Variant("s", ssid),
@@ -32,17 +41,15 @@ class ConnectionMixin(DeviceMixin, ProfileMixin):
         }
 
         if password:
-            settings["802-11-wireless"]["security"] = Variant("s", "802-11-wireless-security")
-            settings["802-11-wireless-security"] = {
-                "key-mgmt": Variant("s", "wpa-psk"),
-                "psk": Variant("s", password),
-            }
+            self._apply_password(settings, password)
+
+        if advanced_options:
+            apply_advanced_settings(settings, advanced_options, nm_version)
 
         return settings
 
-    async def _set_password(self, path: str, settings: dict, password: str):
-        connection = await self.dbus.interface(NM_SERVICE, path, CONNECTION_INTERFACE)
-
+    @staticmethod
+    def _apply_password(settings: dict, password: str):
         wireless = settings.setdefault("802-11-wireless", {})
         wireless["security"] = Variant("s", "802-11-wireless-security")
 
@@ -55,6 +62,8 @@ class ConnectionMixin(DeviceMixin, ProfileMixin):
         security["key-mgmt"] = Variant("s", key_mgmt)
         security["psk"] = Variant("s", password)
 
+    async def _save_settings(self, path: str, settings: dict):
+        connection = await self.dbus.interface(NM_SERVICE, path, CONNECTION_INTERFACE)
         await connection.call_update2(settings, 0)
 
     async def _wait_for_activation(self, active_path: str, timeout: float = 30.0) -> bool:
@@ -77,7 +86,13 @@ class ConnectionMixin(DeviceMixin, ProfileMixin):
 
         return False
 
-    async def connect_network(self, ssid: str, password: str | None = None, ifname=None) -> dict:
+    async def connect_network(
+        self,
+        ssid: str,
+        password: str | None = None,
+        ifname=None,
+        advanced_options: dict | None = None,
+    ) -> dict:
         await self.start()
 
         device = await self._wifi_device(ifname)
@@ -89,16 +104,27 @@ class ConnectionMixin(DeviceMixin, ProfileMixin):
         device_path, _ = device
 
         try:
+            options = (
+                normalize_advanced_options(advanced_options)
+                if advanced_options is not None
+                else None
+            )
+            nm_version = await self.version() if options else None
             connection_path, settings = await self._find_connection(ssid)
             nm = await self._nm()
 
             if connection_path is not None:
                 if password:
-                    await self._set_password(connection_path, settings, password)
+                    self._apply_password(settings, password)
+                if options:
+                    apply_advanced_settings(settings, options, nm_version)
+                if password or options:
+                    await self._save_settings(connection_path, settings)
                 active_path = await nm.call_activate_connection(connection_path, device_path, "/")
             else:
+                settings = self._build_settings(ssid, password, options, nm_version)
                 _, active_path = await nm.call_add_and_activate_connection(
-                    self._build_settings(ssid, password), device_path, "/"
+                    settings, device_path, "/"
                 )
 
             if await self._wait_for_activation(active_path):

@@ -50,9 +50,16 @@ class NetworkManager:
             return []
 
     @staticmethod
-    def connect_network(ssid: str, password: str | None = None, ifname: str | None = None):
+    def connect_network(
+        ssid: str,
+        password: str | None = None,
+        ifname: str | None = None,
+        advanced_options: dict | None = None,
+    ):
         try:
-            return _action_runner.call(_action.connect_network(ssid, password, ifname))
+            return _action_runner.call(
+                _action.connect_network(ssid, password, ifname, advanced_options)
+            )
         except Exception as error:
             return {
                 "success": False,
